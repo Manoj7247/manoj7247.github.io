@@ -2,440 +2,706 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="OFC Gamerz is currently undergoing maintenance. Get notified when we're back online!" />
-  <meta name="theme-color" content="#7c4dff" /> 
-  <link rel="icon" href="og1mg.png" type="image/png">
-  <title>OG ⚜</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XPLAYER — Gaming HQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --primary: #7c4dff;
-      --secondary: #2979ff;
-      --text: #ffffff;
-      --bg: linear-gradient(135deg, #0e0e0e, #1a1a1a);
-      --card-bg: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.12);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      --spinner-bg: rgba(255, 255, 255, 0.1);
-    }
-    body.light {
-      --text: #111;
-      --bg: linear-gradient(135deg, #f2f3f7, #e6e9ef);
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --border: rgba(0, 0, 0, 0.1);
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      --spinner-bg: rgba(0, 0, 0, 0.1);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      height: 100%;
-      font-family: 'Orbitron', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    .top-buttons {
-      position: absolute;
-      top: 20px; left: 0; right: 0;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 20px;
-      z-index: 999;
-    }
-    .top-buttons button {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--text);
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .top-buttons button:hover { transform: scale(1.15); }
-    .main-content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      padding: 60px 20px 40px;
-    }
-    .bg-blob {
-      position: absolute;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, var(--primary), transparent 70%);
-      filter: blur(150px);
-      border-radius: 50%;
-      z-index: 0;
-      animation: float 20s infinite ease-in-out;
-    }
-    .bg-blob.secondary {
-      background: radial-gradient(circle, var(--secondary), transparent 70%);
-      animation-delay: 10s;
-      bottom: -100px; right: -120px;
-    }
-    .bg-blob.tertiary {
-      top: 150px; left: 50px;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, #ff4081, transparent 70%);
-      filter: blur(100px);
-      animation-delay: 5s;
-    }
-    .bg-blob.quaternary {
-      bottom: 150px; right: 50px;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, #00e676, transparent 70%);
-      filter: blur(100px);
-      animation-delay: 15s;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(30px) translateX(20px); }
-    }
-    .container {
-      position: relative;
-      z-index: 1;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px 30px;
-      max-width: 500px;
-      width: 100%;
-      backdrop-filter: blur(15px);
-      box-shadow: var(--shadow);
-    }
-    .logo {
-      width: 80px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      filter: drop-shadow(0 0 5px var(--primary));
-    }
-    h1 {
-      font-size: 2.2rem;
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 1.05rem;
-      margin-bottom: 25px;
-    }
-    .spinner {
-      margin: 30px auto;
-      width: 48px; height: 48px;
-      border: 5px solid var(--spinner-bg);
-      border-top: 5px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    form {
-      margin-top: 20px;
-    }
-    input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: inherit;
-      margin-bottom: 12px;
-      font-size: 0.95rem;
-    }
-    button.submit {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
-      border: none;
-      color: white;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: 0.3s ease;
-    }
-    button.submit:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px var(--primary);
-    }
-    .happy {
-      margin-top: 30px;
-      font-size: 1.2rem;
-      color: var(--secondary);
-      font-weight: 600;
-      text-shadow: 0 0 5px rgba(41, 121, 255, 0.3);
-    }
-    footer {
-      text-align: center;
-      padding: 16px;
-      font-size: 0.9rem;
-      color: #aaa;
-      background: #0a0a0a;
-      border-top: 1px solid #222;
-    }
-    body.light footer {
-      background: #e9ebee;
-      color: #555;
-      border-top: 1px solid #ccc;
-    }
-    footer span {
-      color: var(--primary);
-      font-weight: 600;
-    }
-    @media (max-width: 500px) {
-      h1 { font-size: 1.8rem; }
-      .happy { font-size: 1rem; }
+      --neon-green: #00ff9f;
+      --neon-cyan: #00e5ff;
+      --neon-blue: #0077ff;
+      --dark-bg: #020b0f;
+      --panel-bg: #040f15;
+      --card-bg: #061520;
+      --border: #0a2a35;
+      --glow-green: 0 0 8px #00ff9f, 0 0 20px #00ff9f55, 0 0 40px #00ff9f22;
+      --glow-cyan: 0 0 8px #00e5ff, 0 0 20px #00e5ff55, 0 0 40px #00e5ff22;
+      --text-primary: #e0fff8;
+      --text-muted: #4a8a7a;
     }
 
-    /* Chatbot styles */
-    #chatbot {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      cursor: none;
+      overflow-x: hidden;
     }
-    #chatToggleBtn {
-      width: 60px; height: 60px;
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--neon-green);
       border-radius: 50%;
-      border: none;
-      background: var(--primary);
-      color: white;
-      font-size: 2rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(124, 77, 255, 0.6);
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      box-shadow: var(--glow-green);
+      transition: transform 0.1s ease;
+    }
+    #cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s;
+      opacity: 0.6;
+    }
+    a:hover ~ #cursor, button:hover ~ #cursor { transform: scale(2); }
+
+    /* ── SCANLINE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,159,0.015) 2px,
+        rgba(0,255,159,0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 64px;
+      background: rgba(2, 11, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--neon-cyan); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+    .nav-status {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--neon-green);
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 4px var(--neon-green); opacity: 1; }
+      50% { box-shadow: 0 0 14px var(--neon-green); opacity: 0.6; }
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 64px 5% 0;
+      overflow: hidden;
+      z-index: 1;
     }
-    #chatToggleBtn.hidden {
+
+    .hero-grid-lines {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 80%,
+          rgba(0,255,159,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 100%,
+          rgba(0,229,255,0.1) 0%, transparent 60%);
+      z-index: 0;
+    }
+
+    /* floating particles */
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      animation: float linear infinite;
       opacity: 0;
-      pointer-events: none;
-      transform: scale(0);
     }
-    #chatWindow {
-      width: 320px; max-height: 400px;
+    @keyframes float {
+      0%   { transform: translateY(100vh) translateX(0);   opacity: 0; }
+      10%  { opacity: 0.8; }
+      90%  { opacity: 0.8; }
+      100% { transform: translateY(-20px) translateX(30px); opacity: 0; }
+    }
+
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero-name {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 0.9;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      letter-spacing: 0.05em;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards, glitch 5s 2s infinite;
+    }
+    @keyframes glitch {
+      0%, 94%, 100% { clip-path: none; transform: none; }
+      95% {
+        clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+        transform: translateX(-4px);
+        color: var(--neon-cyan);
+      }
+      96% {
+        clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
+        transform: translateX(4px);
+        color: var(--neon-green);
+      }
+      97% { clip-path: none; transform: translateX(-2px); }
+      98% { clip-path: none; transform: none; }
+    }
+    .hero-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      color: var(--text-muted);
+      letter-spacing: 0.2em;
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+    .hero-sub span { color: var(--neon-cyan); }
+    .hero-badges {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s forwards;
+    }
+    .badge {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--neon-cyan);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      background: rgba(0,229,255,0.05);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .badge:hover {
+      background: rgba(0,229,255,0.12);
+      box-shadow: var(--glow-cyan);
+    }
+    .hero-cta {
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 1s forwards;
+    }
+    .btn-primary {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2.5rem;
+      border: 2px solid var(--neon-green);
+      color: var(--neon-green);
+      background: transparent;
+      clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+      transition: all 0.2s;
+      display: inline-block;
+      cursor: none;
+    }
+    .btn-primary:hover {
+      background: var(--neon-green);
+      color: var(--dark-bg);
+      box-shadow: var(--glow-green);
+    }
+    .scroll-hint {
+      position: absolute; bottom: 2.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.2em;
+      animation: fadeIn 1s 1.5s both;
+    }
+    .scroll-arrow {
+      width: 1px; height: 40px;
+      background: linear-gradient(var(--neon-cyan), transparent);
+      animation: scrollDown 1.5s infinite;
+    }
+    @keyframes scrollDown {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative; z-index: 1;
+      padding: 6rem 5%;
+    }
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-label::before { content: '> '; }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: 3rem;
+    }
+    .section-title em {
+      font-style: normal;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      opacity: 0.3;
+      margin: 0;
+    }
+
+    /* ── ORIGIN STORY ── */
+    #origin .origin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .origin-text p {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: #8ab8b0;
+      margin-bottom: 1.25rem;
+    }
+    .origin-text p strong {
+      color: var(--neon-green);
+      font-weight: 600;
+    }
+    .origin-text p em {
+      font-style: normal;
+      color: var(--neon-cyan);
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(15px);
-      display: flex;
-      flex-direction: column;
+      border-top: 2px solid var(--neon-green);
+      padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      border-top-color: var(--neon-cyan);
+      box-shadow: inset 0 0 30px rgba(0,229,255,0.04);
+    }
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 2rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      margin-top: 0.4rem;
+    }
+
+    /* ── GAMES I PLAY ── */
+    #games { background: linear-gradient(180deg, transparent, rgba(0,255,159,0.02) 50%, transparent); }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .game-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      position: relative;
       overflow: hidden;
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.8);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      margin-top: 10px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: none;
     }
-    #chatWindow.open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: scale(1);
+    .game-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent, var(--neon-green));
+      box-shadow: 0 0 10px var(--accent, var(--neon-green));
+      transition: height 0.3s;
     }
-    #chatWindow header {
-      background: var(--primary);
-      color: white;
-      padding: 10px 15px;
+    .game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .game-card:hover::before { height: 3px; }
+    .game-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+      filter: drop-shadow(0 0 8px var(--accent, var(--neon-green)));
+    }
+    .game-name {
+      font-family: 'Orbitron', monospace;
       font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
     }
-    #chatMessages {
-      flex: 1;
-      padding: 10px 15px;
-      overflow-y: auto;
-      background: rgba(0,0,0,0.05);
-      color: #222;
-      scrollbar-width: thin;
-      scrollbar-color: var(--primary) transparent;
+    .game-genre {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent, var(--neon-green));
+      letter-spacing: 0.2em;
+      margin-bottom: 0.75rem;
     }
-    #chatMessages::-webkit-scrollbar {
-      width: 6px;
+    .game-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
     }
-    #chatMessages::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 10px;
+    .skill-bar {
+      margin-top: 1rem;
+      background: var(--border);
+      height: 3px;
+      border-radius: 2px;
+      overflow: visible;
+      position: relative;
     }
-    #chatMessages .user-msg {
+    .skill-fill {
+      height: 100%;
+      background: var(--accent, var(--neon-green));
+      box-shadow: 0 0 8px var(--accent, var(--neon-green));
+      border-radius: 2px;
+      transition: width 1.5s ease;
+      position: relative;
+    }
+    .skill-fill::after {
+      content: '';
+      position: absolute; right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 8px; height: 8px;
+      background: var(--accent, var(--neon-green));
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent, var(--neon-green));
+    }
+    .skill-pct {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
       text-align: right;
-      margin: 6px 0;
     }
-    #chatMessages .user-msg span {
-      background: var(--secondary);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px 20px 0 20px;
-      display: inline-block;
-      max-width: 75%;
+
+    /* ── TIMELINE ── */
+    #timeline .tl-wrap {
+      position: relative;
+      padding-left: 2.5rem;
+      max-width: 700px;
     }
-    #chatMessages .bot-msg {
-      text-align: left;
-      margin: 6px 0;
+    .tl-wrap::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(var(--neon-green), var(--neon-cyan), var(--neon-blue));
+      opacity: 0.4;
     }
-    #chatMessages .bot-msg span {
-      background: var(--primary);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px 20px 20px 0;
-      display: inline-block;
-      max-width: 75%;
+    .tl-item {
+      position: relative;
+      margin-bottom: 3rem;
     }
-    #chatInputForm {
-      border-top: 1px solid var(--border);
+    .tl-dot {
+      position: absolute; left: -2.95rem; top: 0.3rem;
+      width: 12px; height: 12px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: var(--glow-green);
+    }
+    .tl-year {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.4rem;
+    }
+    .tl-event {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
+    }
+    .tl-detail {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── LINKS ── */
+    #links .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .link-card {
       display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      transition: all 0.2s;
+      cursor: none;
     }
-    #chatInput {
-      flex: 1;
-      padding: 10px 15px;
-      border: none;
-      background: rgba(255,255,255,0.1);
-      color: var(--text);
+    .link-card:hover {
+      border-color: var(--link-color, var(--neon-cyan));
+      background: rgba(0,229,255,0.05);
+      transform: translateX(4px);
     }
-    #chatInput::placeholder {
-      color: var(--text);
-      opacity: 0.7;
+    .link-icon {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 6px var(--link-color, var(--neon-cyan)));
+      flex-shrink: 0;
     }
-    #chatSendBtn {
-      background: var(--secondary);
-      border: none;
-      color: white;
-      padding: 0 20px;
-      cursor: pointer;
+    .link-info .link-name {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
     }
-    #chatSendBtn:hover {
-      background: var(--primary);
+    .link-info .link-handle {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--link-color, var(--neon-cyan));
+      letter-spacing: 0.1em;
+      margin-top: 0.2rem;
+    }
+    .link-arrow {
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: var(--link-color, var(--neon-cyan));
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: all 0.2s;
+    }
+    .link-card:hover .link-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── SETUP / SPECS ── */
+    #setup .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .spec-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--neon-green);
+      transition: border-left-color 0.2s;
+    }
+    .spec-row:hover { border-left-color: var(--neon-cyan); }
+    .spec-key {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      min-width: 80px;
+    }
+    .spec-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center;
+      background: linear-gradient(180deg, transparent, rgba(0,255,159,0.03));
+    }
+    #contact .contact-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    #contact p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+    .contact-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-secondary {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      background: transparent;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.2s;
+      cursor: none;
+    }
+    .btn-secondary:hover {
+      background: var(--neon-cyan);
+      color: var(--dark-bg);
+      box-shadow: var(--glow-cyan);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+    }
+    .footer-copy {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      #origin .origin-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .nav-links { display: none; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="top-buttons">
-    <button onclick="location.href='/'" title="Back">&#x2190;</button>
-    <button id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
-  </div>
+  <!-- CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
 
-  <div class="main-content" role="main" aria-labelledby="main-title">
-    <div class="bg-blob"></div>
-    <div class="bg-blob secondary"></div>
-    <div class="bg-blob tertiary"></div>
-    <div class="bg-blob quaternary"></div>
+  <!-- FLOATING PARTICLES -->
+  <div id="particles"></div>
 
-    <div class="container">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" class="logo" />
-      <h1 id="main-title">🚧 Server Down ❕</h1>
-      <p>This site is currently under maintenance.<br />Please check back soon!</p>
-      <p>Contact Manoj for further clarification.</p>
-      <div class="spinner" role="status" aria-live="polite" aria-label="Loading"></div>
-
-      <form id="notifyForm" aria-label="Notify me form">
-        <input type="email" placeholder="Enter your email" required aria-label="Email address" />
-        <button type="submit" class="submit">Notify Me</button>
-      </form>
-
-      <div class="happy">🎮 Happy Gaming!</div>
-    </div>
-  </div>
-
-  <footer>
-    © 2025 <span>OFC Gamerz</span> · All rights reserved
-  </footer>
-
-  <!-- Chatbot UI -->
-  <div id="chatbot">
-    <button id="chatToggleBtn" aria-label="Open chat support">🤖</button>
-
-    <div id="chatWindow" aria-hidden="true">
-      <header>
-        <h2>Chat Support</h2>
-        <button id="chatCloseBtn" aria-label="Close chat support">&times;</button>
-      </header>
-      <div id="chatMessages"></div>
-      <form id="chatInputForm">
-        <input type="text" id="chatInput" placeholder="Type your message..." required />
-        <button type="submit" id="chatSendBtn">Send</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-      const btn = document.getElementById("themeToggleBtn");
-      btn.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
-    }
-
-    document.getElementById("notifyForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = this.querySelector('input[type="email"]').value.trim();
-      if (email) {
-        alert(`Thanks, ${email}! We will notify you when we're back.`);
-        this.reset();
-      }
-    });
-
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    const chatWindow = document.getElementById('chatWindow');
-    const chatCloseBtn = document.getElementById('chatCloseBtn');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInputForm = document.getElementById('chatInputForm');
-    const chatInput = document.getElementById('chatInput');
-
-    chatToggleBtn.addEventListener('click', () => {
-      chatToggleBtn.classList.add('hidden');
-      chatWindow.classList.add('open');
-      chatWindow.setAttribute('aria-hidden', 'false');
-      chatInput.focus();
-    });
-
-    chatCloseBtn.addEventListener('click', () => {
-      chatWindow.classList.remove('open');
-      chatWindow.setAttribute('aria-hidden', 'true');
-      chatToggleBtn.classList.remove('hidden');
-      chatToggleBtn.focus();
-    });
-
-    const botResponses = {
-      "hello": "Hello! I am Manoj's bot. How can I assist you today?",
-      "hi": "Hi there! I am Manoj's bot. What can I do for you?",
-      "help": "Sure! What do you need help with?",
-      "maintenance": "Our system is currently under maintenance. Thanks for your patience!",
-      "thanks": "You're welcome! Let me know if you need anything else.",
-      "thank you": "No problem! We're here to help."
-    };
-
-    function addMessage(text, sender = "bot") {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = sender === "bot" ? "bot-msg" : "user-msg";
-      const span = document.createElement('span');
-      span.textContent = text;
-      messageDiv.appendChild(span);
-      chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    chatInputForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const userText = chatInput.value.trim();
-      if (!userText) return;
-      addMessage(userText, "user");
-      chatInput.value = '';
-      const lower = userText.toLowerCase();
-      let response = "Sorry, I didn't understand that. Please contact Manoj (owner of OFC Gamerz channel) for further help.";
-      for (const key in botResponses) {
-        if (lower.includes(key)) {
-          response = botResponses[key];
-          break;
-        }
-      }
-      setTimeout(() => addMessage(response, "bot"), 700);
-    });
-  </script>
-</body>
-</html>
+  <!-- NAVBAR -->
+  <nav>
+    <a href="#hero" class="nav-logo">X<span>PLAYER</span></a>
+    <ul class="nav-links">
