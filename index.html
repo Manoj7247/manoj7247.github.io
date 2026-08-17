@@ -1,281 +1,269 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
 
-const W = 420, H = 580;
-const GRAVITY = 0.42, FLAP = -8.4, PIPE_W = 58, PIPE_GAP = 150, PIPE_SPEED = 2.6, PIPE_SPAWN = 210;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-
-export default function SignalBird() {
-  const canvasRef = useRef(null);
-  const stateRef = useRef("idle");
-  const gameRef = useRef(null);
-  const [screen, setScreen] = useState("idle"); // idle | playing | dead
-  const [score, setScore] = useState(0);
-  const [lastScore, setLastScore] = useState(null);
-  const [best, setBest] = useState(() => parseInt(localStorage.getItem("sb_best") || "0"));
-
-  function makeBird() { return { x: 110, y: H / 2, vy: 0, angle: 0, trail: [] }; }
-  function makeGame() {
-    return {
-      bird: makeBird(), pipes: [], particles: [],
-      score: 0, frame: 0, nextPipe: PIPE_SPAWN,
-      stars: Array.from({ length: 55 }, () => ({
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() * 1.2 + 0.3, speed: Math.random() * 0.5 + 0.2,
-        alpha: Math.random() * 0.5 + 0.25,
-      })),
-    };
+  :root {
+    --neon:   #39FF88;
+    --cyan:   #34F5FF;
+    --amber:  #FFD23D;
+    --ink:    #EAFFF4;
+    --dim:    rgba(57,255,136,0.25);
+    --bg1:    #01100A;
+    --bg2:    #000D07;
   }
 
-  const flap = useCallback(() => {
-    if (stateRef.current === "playing" && gameRef.current) {
-      gameRef.current.bird.vy = FLAP;
-    }
-  }, []);
+  html, body {
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, var(--bg1), var(--bg2));
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--ink);
+  }
 
-  const startGame = useCallback(() => {
-    gameRef.current = makeGame();
-    stateRef.current = "playing";
-    setScore(0);
-    setScreen("playing");
-  }, []);
+  /* ── Starfield canvas ── */
+  #stars {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  useEffect(() => {
-    gameRef.current = makeGame();
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    let raf;
+  /* ── Grid overlay ── */
+  #grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(57,255,136,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,255,136,0.04) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    function spawnPipe(g) {
-      const gapY = 100 + Math.random() * (H - 210 - PIPE_GAP);
-      g.pipes.push({ x: W + 10, gapY, passed: false });
-    }
+  /* ── Main card ── */
+  #card {
+    position: relative; z-index: 1;
+    width: min(640px, 92vw);
+    margin: 0 auto;
+    top: 50%; transform: translateY(-50%);
+    padding: 48px 52px 44px;
+    background: rgba(4,14,10,0.7);
+    border: 1px solid rgba(57,255,136,0.28);
+    box-shadow: 0 0 60px rgba(57,255,136,0.08), inset 0 0 40px rgba(0,0,0,0.4);
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+    backdrop-filter: blur(6px);
+  }
 
-    function checkCollision(g) {
-      const { x, y } = g.bird, br = 10;
-      if (y - br <= 0 || y + br >= H) return true;
-      for (const p of g.pipes) {
-        if (x + br > p.x && x - br < p.x + PIPE_W) {
-          if (y - br < p.gapY || y + br > p.gapY + PIPE_GAP) return true;
-        }
-      }
-      return false;
-    }
+  /* corner ticks */
+  #card::before, #card::after {
+    content: ''; position: absolute; width: 14px; height: 14px; border: 1.5px solid var(--cyan);
+  }
+  #card::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  #card::after  { bottom: -1px; right: -1px; border-left: none;  border-top: none; }
 
-    function update() {
-      const g = gameRef.current;
-      if (!g) return;
-      g.frame++;
+  /* ── Eyebrow ── */
+  .eyebrow {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--cyan); text-transform: uppercase;
+    margin-bottom: 28px; opacity: 0.85;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--neon); box-shadow: 0 0 8px var(--neon);
+    animation: blink 1.6s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.1;} }
 
-      // stars always scroll
-      g.stars.forEach(s => {
-        s.x -= s.speed * (stateRef.current === "playing" ? 1.6 : 0.4);
-        if (s.x < 0) s.x = W;
-      });
+  /* ── Heading ── */
+  .star-prefix {
+    font-size: clamp(28px, 5vw, 42px);
+    color: var(--amber);
+    text-shadow: 0 0 18px var(--amber);
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 6px;
+    animation: flicker 4s infinite;
+  }
+  @keyframes flicker {
+    0%,92%,96%,100%{ opacity:1; }
+    94%{ opacity:0.5; }
+  }
 
-      if (stateRef.current === "idle") {
-        g.bird.y = H / 2 + Math.sin(g.frame * 0.045) * 16;
-        return;
-      }
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(42px, 9vw, 72px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    color: var(--neon);
+    text-shadow: 0 0 22px var(--dim), 0 0 60px rgba(57,255,136,0.15);
+    line-height: 1;
+    margin-bottom: 30px;
+  }
 
-      if (stateRef.current === "playing") {
-        g.bird.vy += GRAVITY;
-        g.bird.y += g.bird.vy;
-        g.bird.angle = g.bird.vy * 0.054;
-        g.bird.trail.push({ x: g.bird.x, y: g.bird.y });
-        if (g.bird.trail.length > 14) g.bird.trail.shift();
+  /* ── Quote ── */
+  .quote {
+    font-size: clamp(13px, 2.2vw, 15px);
+    color: var(--ink);
+    opacity: 0.78;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    border-left: 2px solid var(--neon);
+    padding-left: 18px;
+    margin-bottom: 38px;
+    max-width: 480px;
+  }
+  .quote em {
+    font-style: normal;
+    color: var(--amber);
+    text-shadow: 0 0 10px rgba(255,210,61,0.4);
+  }
 
-        g.nextPipe--;
-        if (g.nextPipe <= 0) { spawnPipe(g); g.nextPipe = PIPE_SPAWN; }
+  /* ── Progress bar ── */
+  .bar-label {
+    font-size: 10px; letter-spacing: 2px; color: var(--cyan);
+    text-transform: uppercase; margin-bottom: 8px; opacity: 0.7;
+  }
+  .track {
+    width: 100%; height: 10px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(57,255,136,0.25);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0c5c3a, var(--neon) 70%, var(--cyan));
+    width: 0%;
+    transition: width 0.6s ease;
+    position: relative; overflow: hidden;
+  }
+  .fill::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      115deg,
+      rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 2px,
+      transparent 2px, transparent 10px
+    );
+    animation: stream 1s linear infinite;
+  }
+  @keyframes stream { to { background-position-x: -40px; } }
+  .bar-pct {
+    font-size: 11px; color: var(--neon); letter-spacing: 1px;
+    text-align: right; opacity: 0.8;
+  }
 
-        g.pipes.forEach(p => { p.x -= PIPE_SPEED; });
-        g.pipes.forEach(p => {
-          if (!p.passed && p.x + PIPE_W < g.bird.x) {
-            p.passed = true; g.score++;
-            setScore(g.score);
-          }
-        });
-        g.pipes = g.pipes.filter(p => p.x > -PIPE_W - 10);
+  /* ── Divider ── */
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--dim), transparent);
+    margin: 32px 0;
+  }
 
-        if (checkCollision(g)) {
-          stateRef.current = "dead";
-          for (let i = 0; i < 28; i++) {
-            const a = (Math.PI * 2 / 28) * i + Math.random() * 0.3;
-            const spd = 2 + Math.random() * 5;
-            g.particles.push({
-              x: g.bird.x, y: g.bird.y,
-              vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-              life: 1, color: Math.random() > 0.5 ? "#39FF88" : "#FF4060",
-            });
-          }
-          const newBest = Math.max(g.score, parseInt(localStorage.getItem("sb_best") || "0"));
-          localStorage.setItem("sb_best", newBest);
-          setBest(newBest);
-          setLastScore(g.score);
-          setTimeout(() => { stateRef.current = "over"; setScreen("dead"); }, 800);
-        }
-      }
+  /* ── Footer ── */
+  .footer {
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--cyan); opacity: 0.45;
+    text-transform: uppercase;
+  }
+  #clock { margin-left: 6px; color: var(--neon); opacity: 0.6; }
+</style>
+</head>
+<body>
 
-      // particles
-      g.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life -= 0.028; });
-      g.particles = g.particles.filter(p => p.life > 0);
-    }
+<canvas id="stars"></canvas>
+<div id="grid"></div>
 
-    function drawGrid(g) {
-      ctx.strokeStyle = "#0A2E1E"; ctx.lineWidth = 0.5;
-      const gs = 38, off = (g.frame * 0.7) % gs;
-      for (let x = -gs + off % gs; x < W + gs; x += gs) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-      }
-      for (let y = 0; y < H; y += gs) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-      }
-    }
+<div id="card">
+  <div class="eyebrow"><span class="dot"></span> OFC GAMERZ // STATUS_UPLINK</div>
 
-    function drawStars(g) {
-      g.stars.forEach(s => {
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(52,245,255,${s.alpha})`; ctx.fill();
-      });
-    }
+  <span class="star-prefix">✦ Coming Soon ✦</span>
+  <h1>Have<br>Patience</h1>
 
-    function drawBird(g) {
-      const { x, y, angle, trail } = g.bird;
-      // trail
-      trail.forEach((t, i) => {
-        const a = (i / trail.length) * 0.3;
-        ctx.beginPath(); ctx.arc(t.x, t.y, 5 * (i / trail.length), 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(57,255,136,${a})`; ctx.fill();
-      });
-      // glow
-      const grd = ctx.createRadialGradient(x, y, 0, x, y, 24);
-      grd.addColorStop(0, "rgba(57,255,136,0.2)"); grd.addColorStop(1, "rgba(57,255,136,0)");
-      ctx.beginPath(); ctx.arc(x, y, 24, 0, Math.PI * 2); ctx.fillStyle = grd; ctx.fill();
+  <p class="quote">
+    Sometimes having patience is also a sign —<br>
+    a key to <em>success</em>.
+  </p>
 
-      ctx.save(); ctx.translate(x, y); ctx.rotate(clamp(angle, -0.45, 1.1));
+  <div class="bar-label">Loading progress</div>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <div class="bar-pct" id="pct">0%</div>
+
+  <div class="divider"></div>
+
+  <div class="footer">
+    System time: <span id="clock"></span>
+  </div>
+</div>
+
+<script>
+  /* ── Starfield ─────────────────────────────── */
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.3 + 0.2,
+      speed: Math.random() * 0.35 + 0.1,
+      alpha: Math.random() * 0.55 + 0.15,
+    }));
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.x -= s.speed;
+      if (s.x < 0) { s.x = canvas.width; s.y = Math.random() * canvas.height; }
       ctx.beginPath();
-      ctx.moveTo(15, 0); ctx.lineTo(-9, -8); ctx.lineTo(-5, 0); ctx.lineTo(-9, 8); ctx.closePath();
-      const bg = ctx.createLinearGradient(-9, 0, 15, 0);
-      bg.addColorStop(0, "#0D3D26"); bg.addColorStop(1, "#39FF88");
-      ctx.fillStyle = bg; ctx.fill();
-      ctx.strokeStyle = "#39FF88"; ctx.lineWidth = 1.5;
-      ctx.shadowColor = "#39FF88"; ctx.shadowBlur = 12; ctx.stroke();
-      ctx.beginPath(); ctx.arc(-5, 0, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = "#FFD23D"; ctx.shadowColor = "#FFD23D"; ctx.shadowBlur = 8; ctx.fill();
-      ctx.restore(); ctx.shadowBlur = 0;
-    }
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(52,245,255,${s.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
 
-    function drawPipes(g) {
-      g.pipes.forEach(({ x, gapY }) => {
-        const botY = gapY + PIPE_GAP, topH = gapY, botH = H - botY;
-        [[0, topH, true], [botY, botH, false]].forEach(([py, ph, isTop]) => {
-          if (ph <= 0) return;
-          ctx.fillStyle = "#041A0E"; ctx.fillRect(x, py, PIPE_W, ph);
-          ctx.fillStyle = "rgba(57,255,136,0.04)";
-          for (let sy = py; sy < py + ph; sy += 8) ctx.fillRect(x, sy, PIPE_W, 3);
-          // inner glow edge
-          const eg = ctx.createLinearGradient(0, isTop ? py + ph - 20 : py, 0, isTop ? py + ph : py + 20);
-          eg.addColorStop(0, "rgba(57,255,136,0)"); eg.addColorStop(1, "rgba(57,255,136,0.5)");
-          ctx.fillStyle = eg; ctx.fillRect(x, isTop ? py + ph - 20 : py, PIPE_W, 20);
-          // border
-          ctx.strokeStyle = "#39FF88"; ctx.lineWidth = 1.5;
-          ctx.shadowColor = "#39FF88"; ctx.shadowBlur = 8;
-          ctx.strokeRect(x + 0.75, py + 0.75, PIPE_W - 1.5, ph - 1.5);
-          // cap
-          const capY = isTop ? py + ph - 12 : py;
-          ctx.fillStyle = "#0A2E1E"; ctx.fillRect(x - 4, capY, PIPE_W + 8, 12);
-          ctx.strokeStyle = "#34F5FF"; ctx.lineWidth = 1;
-          ctx.shadowColor = "#34F5FF"; ctx.shadowBlur = 6;
-          ctx.strokeRect(x - 3.5, capY + 0.5, PIPE_W + 7, 11);
-          ctx.shadowBlur = 0;
-        });
-      });
-    }
+  /* ── Progress bar animation ─────────────────── */
+  let pct = 0;
+  const fill = document.getElementById('fill');
+  const pctEl = document.getElementById('pct');
+  const target = 73; // feels "almost there" — not 100%
 
-    function drawParticles(g) {
-      g.particles.forEach(p => {
-        ctx.beginPath(); ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
-        ctx.fillStyle = p.color; ctx.globalAlpha = p.life; ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-    }
+  const barTimer = setInterval(() => {
+    if (pct >= target) { clearInterval(barTimer); return; }
+    pct += Math.random() * 1.4 + 0.2;
+    pct = Math.min(pct, target);
+    fill.style.width = pct + '%';
+    pctEl.textContent = Math.round(pct) + '%';
+  }, 120);
 
-    function draw() {
-      const g = gameRef.current; if (!g) return;
-      const bg = ctx.createLinearGradient(0, 0, 0, H);
-      bg.addColorStop(0, "#01100A"); bg.addColorStop(1, "#000D07");
-      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-      drawGrid(g); drawStars(g); drawPipes(g); drawBird(g); drawParticles(g);
-    }
+  /* ── Live clock ─────────────────────────────── */
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
 
-    function loop() { update(); draw(); raf = requestAnimationFrame(loop); }
-    loop();
-
-    const onKey = e => {
-      if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); flap(); }
-    };
-    window.addEventListener("keydown", onKey);
-    canvas.addEventListener("pointerdown", flap);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); canvas.removeEventListener("pointerdown", flap); };
-  }, [flap]);
-
-  return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-      minHeight:"100vh", background:"#000", fontFamily:"'Share Tech Mono',monospace" }}>
-      <div style={{ position:"relative", width:W, height:H }}>
-        <canvas ref={canvasRef} width={W} height={H} style={{ display:"block" }} />
-
-        {/* Live score */}
-        {screen === "playing" && (
-          <div style={{ position:"absolute", top:18, left:"50%", transform:"translateX(-50%)",
-            fontSize:44, color:"#39FF88", textShadow:"0 0 16px #39FF88,0 0 40px #39FF88",
-            letterSpacing:4, pointerEvents:"none" }}>{score}</div>
-        )}
-
-        {/* Overlays */}
-        {(screen === "idle" || screen === "dead") && (
-          <div onClick={screen === "idle" ? startGame : undefined}
-            style={{ position:"absolute", inset:0, background:"rgba(0,8,6,0.75)",
-              backdropFilter:"blur(2px)", display:"flex", flexDirection:"column",
-              alignItems:"center", justifyContent:"center", cursor: screen === "idle" ? "pointer" : "default" }}>
-
-            <div style={{ fontSize:11, letterSpacing:3, color:"#34F5FF", textTransform:"uppercase", marginBottom:16, opacity:0.8 }}>
-              OFC GAMERZ // SIGNAL_BIRD
-            </div>
-            <div style={{ fontSize:38, fontWeight:700, color:"#EAFFF4", letterSpacing:4,
-              textTransform:"uppercase", textShadow:"0 0 22px rgba(57,255,136,0.4)", lineHeight:1, marginBottom:6 }}>
-              {screen === "dead" ? "FLATLINED" : "SIGNAL\nBIRD"}
-            </div>
-            <div style={{ fontSize:11, color:"#34F5FF", letterSpacing:2, marginBottom:28, opacity:0.7 }}>
-              {screen === "dead" ? "signal lost" : "navigate the data walls"}
-            </div>
-
-            <div style={{ display:"flex", gap:40, marginBottom:30 }}>
-              {screen === "dead" && (
-                <div style={{ textAlign:"center" }}>
-                  <div style={{ fontSize:30, color:"#39FF88", textShadow:"0 0 12px #39FF88" }}>{lastScore}</div>
-                  <div style={{ fontSize:10, color:"#34F5FF", letterSpacing:2, opacity:0.6 }}>LAST</div>
-                </div>
-              )}
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:30, color:"#39FF88", textShadow:"0 0 12px #39FF88" }}>{best || "—"}</div>
-                <div style={{ fontSize:10, color:"#34F5FF", letterSpacing:2, opacity:0.6 }}>BEST</div>
-              </div>
-            </div>
-
-            <button onClick={startGame}
-              style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:13, letterSpacing:3,
-                textTransform:"uppercase", color:"#000", background:"#39FF88", border:"none",
-                padding:"12px 36px", cursor:"pointer", clipPath:"polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)",
-                boxShadow:"0 0 20px rgba(57,255,136,0.55)" }}>
-              {screen === "dead" ? "RETRY" : "TRANSMIT"}
-            </button>
-            <div style={{ marginTop:12, fontSize:10, color:"#EAFFF4", opacity:0.35, letterSpacing:1 }}>
-              SPACE / TAP / CLICK to flap
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+</body>
+</html>
