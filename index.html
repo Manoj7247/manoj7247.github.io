@@ -1,707 +1,281 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OFC GAMERZ — Gaming HQ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --neon-green: #00ff9f;
-      --neon-cyan: #00e5ff;
-      --neon-blue: #0077ff;
-      --dark-bg: #020b0f;
-      --panel-bg: #040f15;
-      --card-bg: #061520;
-      --border: #0a2a35;
-      --glow-green: 0 0 8px #00ff9f, 0 0 20px #00ff9f55, 0 0 40px #00ff9f22;
-      --glow-cyan: 0 0 8px #00e5ff, 0 0 20px #00e5ff55, 0 0 40px #00e5ff22;
-      --text-primary: #e0fff8;
-      --text-muted: #4a8a7a;
+import { useEffect, useRef, useState, useCallback } from "react";
+
+const W = 420, H = 580;
+const GRAVITY = 0.42, FLAP = -8.4, PIPE_W = 58, PIPE_GAP = 150, PIPE_SPEED = 2.6, PIPE_SPAWN = 210;
+
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+export default function SignalBird() {
+  const canvasRef = useRef(null);
+  const stateRef = useRef("idle");
+  const gameRef = useRef(null);
+  const [screen, setScreen] = useState("idle"); // idle | playing | dead
+  const [score, setScore] = useState(0);
+  const [lastScore, setLastScore] = useState(null);
+  const [best, setBest] = useState(() => parseInt(localStorage.getItem("sb_best") || "0"));
+
+  function makeBird() { return { x: 110, y: H / 2, vy: 0, angle: 0, trail: [] }; }
+  function makeGame() {
+    return {
+      bird: makeBird(), pipes: [], particles: [],
+      score: 0, frame: 0, nextPipe: PIPE_SPAWN,
+      stars: Array.from({ length: 55 }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.3, speed: Math.random() * 0.5 + 0.2,
+        alpha: Math.random() * 0.5 + 0.25,
+      })),
+    };
+  }
+
+  const flap = useCallback(() => {
+    if (stateRef.current === "playing" && gameRef.current) {
+      gameRef.current.bird.vy = FLAP;
+    }
+  }, []);
+
+  const startGame = useCallback(() => {
+    gameRef.current = makeGame();
+    stateRef.current = "playing";
+    setScore(0);
+    setScreen("playing");
+  }, []);
+
+  useEffect(() => {
+    gameRef.current = makeGame();
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let raf;
+
+    function spawnPipe(g) {
+      const gapY = 100 + Math.random() * (H - 210 - PIPE_GAP);
+      g.pipes.push({ x: W + 10, gapY, passed: false });
     }
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--dark-bg);
-      color: var(--text-primary);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      cursor: none;
-      overflow-x: hidden;
-    }
-
-    /* ── CUSTOM CURSOR ── */
-    #cursor {
-      width: 12px; height: 12px;
-      background: var(--neon-green);
-      border-radius: 50%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      box-shadow: var(--glow-green);
-      transition: transform 0.1s ease;
-    }
-    #cursor-ring {
-      width: 32px; height: 32px;
-      border: 1px solid var(--neon-cyan);
-      border-radius: 50%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9998;
-      transition: transform 0.15s ease, width 0.2s, height 0.2s;
-      opacity: 0.6;
-    }
-    a:hover ~ #cursor, button:hover ~ #cursor { transform: scale(2); }
-
-    /* ── SCANLINE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,255,159,0.015) 2px,
-        rgba(0,255,159,0.015) 4px
-      );
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    /* ── GRID BACKGROUND ── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── NAVBAR ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      height: 64px;
-      background: rgba(2, 11, 15, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: 1.3rem;
-      color: var(--neon-green);
-      text-shadow: var(--glow-green);
-      letter-spacing: 0.15em;
-      text-decoration: none;
-    }
-    .nav-logo span { color: var(--neon-cyan); }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: color 0.2s, text-shadow 0.2s;
-    }
-    .nav-links a:hover {
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
-    }
-    .nav-status {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--neon-green);
-    }
-    .status-dot {
-      width: 8px; height: 8px;
-      background: var(--neon-green);
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 4px var(--neon-green); opacity: 1; }
-      50% { box-shadow: 0 0 14px var(--neon-green); opacity: 0.6; }
-    }
-
-    /* ── HERO ── */
-    #hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 64px 5% 0;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .hero-grid-lines {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 80%,
-          rgba(0,255,159,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 50% 100%,
-          rgba(0,229,255,0.1) 0%, transparent 60%);
-      z-index: 0;
-    }
-
-    /* floating particles */
-    .particle {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: var(--neon-cyan);
-      border-radius: 50%;
-      animation: float linear infinite;
-      opacity: 0;
-    }
-    @keyframes float {
-      0%   { transform: translateY(100vh) translateX(0);   opacity: 0; }
-      10%  { opacity: 0.8; }
-      90%  { opacity: 0.8; }
-      100% { transform: translateY(-20px) translateX(30px); opacity: 0; }
-    }
-
-    .hero-tag {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeUp 0.6s 0.2s forwards;
-    }
-    .hero-name {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: clamp(3.5rem, 10vw, 8rem);
-      line-height: 0.9;
-      color: var(--neon-green);
-      text-shadow: var(--glow-green);
-      letter-spacing: 0.05em;
-      position: relative;
-      z-index: 1;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.4s forwards, glitch 5s 2s infinite;
-    }
-    @keyframes glitch {
-      0%, 94%, 100% { clip-path: none; transform: none; }
-      95% {
-        clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-        transform: translateX(-4px);
-        color: var(--neon-cyan);
+    function checkCollision(g) {
+      const { x, y } = g.bird, br = 10;
+      if (y - br <= 0 || y + br >= H) return true;
+      for (const p of g.pipes) {
+        if (x + br > p.x && x - br < p.x + PIPE_W) {
+          if (y - br < p.gapY || y + br > p.gapY + PIPE_GAP) return true;
+        }
       }
-      96% {
-        clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
-        transform: translateX(4px);
-        color: var(--neon-green);
+      return false;
+    }
+
+    function update() {
+      const g = gameRef.current;
+      if (!g) return;
+      g.frame++;
+
+      // stars always scroll
+      g.stars.forEach(s => {
+        s.x -= s.speed * (stateRef.current === "playing" ? 1.6 : 0.4);
+        if (s.x < 0) s.x = W;
+      });
+
+      if (stateRef.current === "idle") {
+        g.bird.y = H / 2 + Math.sin(g.frame * 0.045) * 16;
+        return;
       }
-      97% { clip-path: none; transform: translateX(-2px); }
-      98% { clip-path: none; transform: none; }
-    }
-    .hero-sub {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(0.75rem, 2vw, 1rem);
-      color: var(--text-muted);
-      letter-spacing: 0.2em;
-      margin-top: 1rem;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.6s forwards;
-    }
-    .hero-sub span { color: var(--neon-cyan); }
-    .hero-badges {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 2.5rem;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.8s forwards;
-    }
-    .badge {
-      padding: 0.4rem 1rem;
-      border: 1px solid var(--neon-cyan);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      background: rgba(0,229,255,0.05);
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-    .badge:hover {
-      background: rgba(0,229,255,0.12);
-      box-shadow: var(--glow-cyan);
-    }
-    .hero-cta {
-      margin-top: 3rem;
-      opacity: 0;
-      animation: fadeUp 0.7s 1s forwards;
-    }
-    .btn-primary {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 0.9rem 2.5rem;
-      border: 2px solid var(--neon-green);
-      color: var(--neon-green);
-      background: transparent;
-      clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
-      transition: all 0.2s;
-      display: inline-block;
-      cursor: none;
-    }
-    .btn-primary:hover {
-      background: var(--neon-green);
-      color: var(--dark-bg);
-      box-shadow: var(--glow-green);
-    }
-    .scroll-hint {
-      position: absolute; bottom: 2.5rem;
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.2em;
-      animation: fadeIn 1s 1.5s both;
-    }
-    .scroll-arrow {
-      width: 1px; height: 40px;
-      background: linear-gradient(var(--neon-cyan), transparent);
-      animation: scrollDown 1.5s infinite;
-    }
-    @keyframes scrollDown {
-      0% { transform: scaleY(0); transform-origin: top; }
-      50% { transform: scaleY(1); transform-origin: top; }
-      51% { transform: scaleY(1); transform-origin: bottom; }
-      100% { transform: scaleY(0); transform-origin: bottom; }
+
+      if (stateRef.current === "playing") {
+        g.bird.vy += GRAVITY;
+        g.bird.y += g.bird.vy;
+        g.bird.angle = g.bird.vy * 0.054;
+        g.bird.trail.push({ x: g.bird.x, y: g.bird.y });
+        if (g.bird.trail.length > 14) g.bird.trail.shift();
+
+        g.nextPipe--;
+        if (g.nextPipe <= 0) { spawnPipe(g); g.nextPipe = PIPE_SPAWN; }
+
+        g.pipes.forEach(p => { p.x -= PIPE_SPEED; });
+        g.pipes.forEach(p => {
+          if (!p.passed && p.x + PIPE_W < g.bird.x) {
+            p.passed = true; g.score++;
+            setScore(g.score);
+          }
+        });
+        g.pipes = g.pipes.filter(p => p.x > -PIPE_W - 10);
+
+        if (checkCollision(g)) {
+          stateRef.current = "dead";
+          for (let i = 0; i < 28; i++) {
+            const a = (Math.PI * 2 / 28) * i + Math.random() * 0.3;
+            const spd = 2 + Math.random() * 5;
+            g.particles.push({
+              x: g.bird.x, y: g.bird.y,
+              vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+              life: 1, color: Math.random() > 0.5 ? "#39FF88" : "#FF4060",
+            });
+          }
+          const newBest = Math.max(g.score, parseInt(localStorage.getItem("sb_best") || "0"));
+          localStorage.setItem("sb_best", newBest);
+          setBest(newBest);
+          setLastScore(g.score);
+          setTimeout(() => { stateRef.current = "over"; setScreen("dead"); }, 800);
+        }
+      }
+
+      // particles
+      g.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life -= 0.028; });
+      g.particles = g.particles.filter(p => p.life > 0);
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-
-    /* ── SECTIONS ── */
-    section {
-      position: relative; z-index: 1;
-      padding: 6rem 5%;
-    }
-    .section-label {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.4em;
-      color: var(--neon-green);
-      text-shadow: var(--glow-green);
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .section-label::before { content: '> '; }
-    .section-title {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      color: var(--text-primary);
-      line-height: 1.1;
-      margin-bottom: 3rem;
-    }
-    .section-title em {
-      font-style: normal;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
+    function drawGrid(g) {
+      ctx.strokeStyle = "#0A2E1E"; ctx.lineWidth = 0.5;
+      const gs = 38, off = (g.frame * 0.7) % gs;
+      for (let x = -gs + off % gs; x < W + gs; x += gs) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = 0; y < H; y += gs) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
     }
 
-    /* ── DIVIDER ── */
-    .divider {
-      width: 100%; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-      opacity: 0.3;
-      margin: 0;
+    function drawStars(g) {
+      g.stars.forEach(s => {
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(52,245,255,${s.alpha})`; ctx.fill();
+      });
     }
 
-    /* ── ORIGIN STORY ── */
-    #origin .origin-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-    }
-    .origin-text p {
-      font-size: 1.05rem;
-      line-height: 1.9;
-      color: #8ab8b0;
-      margin-bottom: 1.25rem;
-    }
-    .origin-text p strong {
-      color: var(--neon-green);
-      font-weight: 600;
-    }
-    .origin-text p em {
-      font-style: normal;
-      color: var(--neon-cyan);
-    }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--neon-green);
-      padding: 1.5rem;
-      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .stat-card:hover {
-      border-top-color: var(--neon-cyan);
-      box-shadow: inset 0 0 30px rgba(0,229,255,0.04);
-    }
-    .stat-value {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: 2rem;
-      color: var(--neon-green);
-      text-shadow: var(--glow-green);
-      line-height: 1;
-    }
-    .stat-label {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.15em;
-      margin-top: 0.4rem;
+    function drawBird(g) {
+      const { x, y, angle, trail } = g.bird;
+      // trail
+      trail.forEach((t, i) => {
+        const a = (i / trail.length) * 0.3;
+        ctx.beginPath(); ctx.arc(t.x, t.y, 5 * (i / trail.length), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(57,255,136,${a})`; ctx.fill();
+      });
+      // glow
+      const grd = ctx.createRadialGradient(x, y, 0, x, y, 24);
+      grd.addColorStop(0, "rgba(57,255,136,0.2)"); grd.addColorStop(1, "rgba(57,255,136,0)");
+      ctx.beginPath(); ctx.arc(x, y, 24, 0, Math.PI * 2); ctx.fillStyle = grd; ctx.fill();
+
+      ctx.save(); ctx.translate(x, y); ctx.rotate(clamp(angle, -0.45, 1.1));
+      ctx.beginPath();
+      ctx.moveTo(15, 0); ctx.lineTo(-9, -8); ctx.lineTo(-5, 0); ctx.lineTo(-9, 8); ctx.closePath();
+      const bg = ctx.createLinearGradient(-9, 0, 15, 0);
+      bg.addColorStop(0, "#0D3D26"); bg.addColorStop(1, "#39FF88");
+      ctx.fillStyle = bg; ctx.fill();
+      ctx.strokeStyle = "#39FF88"; ctx.lineWidth = 1.5;
+      ctx.shadowColor = "#39FF88"; ctx.shadowBlur = 12; ctx.stroke();
+      ctx.beginPath(); ctx.arc(-5, 0, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#FFD23D"; ctx.shadowColor = "#FFD23D"; ctx.shadowBlur = 8; ctx.fill();
+      ctx.restore(); ctx.shadowBlur = 0;
     }
 
-    /* ── GAMES I PLAY ── */
-    #games { background: linear-gradient(180deg, transparent, rgba(0,255,159,0.02) 50%, transparent); }
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-    .game-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 1.75rem;
-      position: relative;
-      overflow: hidden;
-      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: none;
-    }
-    .game-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent, var(--neon-green));
-      box-shadow: 0 0 10px var(--accent, var(--neon-green));
-      transition: height 0.3s;
-    }
-    .game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
-    .game-card:hover::before { height: 3px; }
-    .game-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: block;
-      filter: drop-shadow(0 0 8px var(--accent, var(--neon-green)));
-    }
-    .game-name {
-      font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      letter-spacing: 0.05em;
-      margin-bottom: 0.3rem;
-    }
-    .game-genre {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--accent, var(--neon-green));
-      letter-spacing: 0.2em;
-      margin-bottom: 0.75rem;
-    }
-    .game-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .skill-bar {
-      margin-top: 1rem;
-      background: var(--border);
-      height: 3px;
-      border-radius: 2px;
-      overflow: visible;
-      position: relative;
-    }
-    .skill-fill {
-      height: 100%;
-      background: var(--accent, var(--neon-green));
-      box-shadow: 0 0 8px var(--accent, var(--neon-green));
-      border-radius: 2px;
-      transition: width 1.5s ease;
-      position: relative;
-    }
-    .skill-fill::after {
-      content: '';
-      position: absolute; right: 0; top: 50%;
-      transform: translateY(-50%);
-      width: 8px; height: 8px;
-      background: var(--accent, var(--neon-green));
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent, var(--neon-green));
-    }
-    .skill-pct {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      margin-top: 0.4rem;
-      text-align: right;
+    function drawPipes(g) {
+      g.pipes.forEach(({ x, gapY }) => {
+        const botY = gapY + PIPE_GAP, topH = gapY, botH = H - botY;
+        [[0, topH, true], [botY, botH, false]].forEach(([py, ph, isTop]) => {
+          if (ph <= 0) return;
+          ctx.fillStyle = "#041A0E"; ctx.fillRect(x, py, PIPE_W, ph);
+          ctx.fillStyle = "rgba(57,255,136,0.04)";
+          for (let sy = py; sy < py + ph; sy += 8) ctx.fillRect(x, sy, PIPE_W, 3);
+          // inner glow edge
+          const eg = ctx.createLinearGradient(0, isTop ? py + ph - 20 : py, 0, isTop ? py + ph : py + 20);
+          eg.addColorStop(0, "rgba(57,255,136,0)"); eg.addColorStop(1, "rgba(57,255,136,0.5)");
+          ctx.fillStyle = eg; ctx.fillRect(x, isTop ? py + ph - 20 : py, PIPE_W, 20);
+          // border
+          ctx.strokeStyle = "#39FF88"; ctx.lineWidth = 1.5;
+          ctx.shadowColor = "#39FF88"; ctx.shadowBlur = 8;
+          ctx.strokeRect(x + 0.75, py + 0.75, PIPE_W - 1.5, ph - 1.5);
+          // cap
+          const capY = isTop ? py + ph - 12 : py;
+          ctx.fillStyle = "#0A2E1E"; ctx.fillRect(x - 4, capY, PIPE_W + 8, 12);
+          ctx.strokeStyle = "#34F5FF"; ctx.lineWidth = 1;
+          ctx.shadowColor = "#34F5FF"; ctx.shadowBlur = 6;
+          ctx.strokeRect(x - 3.5, capY + 0.5, PIPE_W + 7, 11);
+          ctx.shadowBlur = 0;
+        });
+      });
     }
 
-    /* ── TIMELINE ── */
-    #timeline .tl-wrap {
-      position: relative;
-      padding-left: 2.5rem;
-      max-width: 700px;
-    }
-    .tl-wrap::before {
-      content: '';
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 1px;
-      background: linear-gradient(var(--neon-green), var(--neon-cyan), var(--neon-blue));
-      opacity: 0.4;
-    }
-    .tl-item {
-      position: relative;
-      margin-bottom: 3rem;
-    }
-    .tl-dot {
-      position: absolute; left: -2.95rem; top: 0.3rem;
-      width: 12px; height: 12px;
-      background: var(--neon-green);
-      border-radius: 50%;
-      box-shadow: var(--glow-green);
-    }
-    .tl-year {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
-      letter-spacing: 0.2em;
-      margin-bottom: 0.4rem;
-    }
-    .tl-event {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-      margin-bottom: 0.3rem;
-    }
-    .tl-detail {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.6;
+    function drawParticles(g) {
+      g.particles.forEach(p => {
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = p.color; ctx.globalAlpha = p.life; ctx.fill();
+      });
+      ctx.globalAlpha = 1;
     }
 
-    /* ── LINKS ── */
-    #links .links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
-    }
-    .link-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.25rem 1.5rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      text-decoration: none;
-      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-      transition: all 0.2s;
-      cursor: none;
-    }
-    .link-card:hover {
-      border-color: var(--link-color, var(--neon-cyan));
-      background: rgba(0,229,255,0.05);
-      transform: translateX(4px);
-    }
-    .link-icon {
-      font-size: 1.5rem;
-      filter: drop-shadow(0 0 6px var(--link-color, var(--neon-cyan)));
-      flex-shrink: 0;
-    }
-    .link-info .link-name {
-      font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      font-size: 0.8rem;
-      color: var(--text-primary);
-      letter-spacing: 0.05em;
-    }
-    .link-info .link-handle {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--link-color, var(--neon-cyan));
-      letter-spacing: 0.1em;
-      margin-top: 0.2rem;
-    }
-    .link-arrow {
-      margin-left: auto;
-      font-size: 0.85rem;
-      color: var(--link-color, var(--neon-cyan));
-      opacity: 0;
-      transform: translateX(-6px);
-      transition: all 0.2s;
-    }
-    .link-card:hover .link-arrow { opacity: 1; transform: translateX(0); }
-
-    /* ── SETUP / SPECS ── */
-    #setup .specs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-    .spec-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--neon-green);
-      transition: border-left-color 0.2s;
-    }
-    .spec-row:hover { border-left-color: var(--neon-cyan); }
-    .spec-key {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      min-width: 80px;
-    }
-    .spec-val {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text-primary);
+    function draw() {
+      const g = gameRef.current; if (!g) return;
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, "#01100A"); bg.addColorStop(1, "#000D07");
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      drawGrid(g); drawStars(g); drawPipes(g); drawBird(g); drawParticles(g);
     }
 
-    /* ── CONTACT ── */
-    #contact {
-      text-align: center;
-      background: linear-gradient(180deg, transparent, rgba(0,255,159,0.03));
-    }
-    #contact .contact-inner {
-      max-width: 560px;
-      margin: 0 auto;
-    }
-    #contact p {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
-    }
-    .contact-btns {
-      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    }
-    .btn-secondary {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-decoration: none;
-      padding: 0.75rem 2rem;
-      border: 1px solid var(--neon-cyan);
-      color: var(--neon-cyan);
-      background: transparent;
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      transition: all 0.2s;
-      cursor: none;
-    }
-    .btn-secondary:hover {
-      background: var(--neon-cyan);
-      color: var(--dark-bg);
-      box-shadow: var(--glow-cyan);
-    }
+    function loop() { update(); draw(); raf = requestAnimationFrame(loop); }
+    loop();
 
-    /* ── FOOTER ── */
-    footer {
-      position: relative; z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 2rem 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .footer-logo {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: 1rem;
-      color: var(--neon-green);
-      text-shadow: var(--glow-green);
-    }
-    .footer-copy {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
-    }
+    const onKey = e => {
+      if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); flap(); }
+    };
+    window.addEventListener("keydown", onKey);
+    canvas.addEventListener("pointerdown", flap);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); canvas.removeEventListener("pointerdown", flap); };
+  }, [flap]);
 
-    /* ── SCROLL ANIMATIONS ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+      minHeight:"100vh", background:"#000", fontFamily:"'Share Tech Mono',monospace" }}>
+      <div style={{ position:"relative", width:W, height:H }}>
+        <canvas ref={canvasRef} width={W} height={H} style={{ display:"block" }} />
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      #origin .origin-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      .nav-links { display: none; }
-      .stat-grid { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
-</head>
-<body>
+        {/* Live score */}
+        {screen === "playing" && (
+          <div style={{ position:"absolute", top:18, left:"50%", transform:"translateX(-50%)",
+            fontSize:44, color:"#39FF88", textShadow:"0 0 16px #39FF88,0 0 40px #39FF88",
+            letterSpacing:4, pointerEvents:"none" }}>{score}</div>
+        )}
 
-  <!-- CURSOR -->
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
+        {/* Overlays */}
+        {(screen === "idle" || screen === "dead") && (
+          <div onClick={screen === "idle" ? startGame : undefined}
+            style={{ position:"absolute", inset:0, background:"rgba(0,8,6,0.75)",
+              backdropFilter:"blur(2px)", display:"flex", flexDirection:"column",
+              alignItems:"center", justifyContent:"center", cursor: screen === "idle" ? "pointer" : "default" }}>
 
-  <!-- FLOATING PARTICLES -->
-  <div id="particles"></div>
+            <div style={{ fontSize:11, letterSpacing:3, color:"#34F5FF", textTransform:"uppercase", marginBottom:16, opacity:0.8 }}>
+              OFC GAMERZ // SIGNAL_BIRD
+            </div>
+            <div style={{ fontSize:38, fontWeight:700, color:"#EAFFF4", letterSpacing:4,
+              textTransform:"uppercase", textShadow:"0 0 22px rgba(57,255,136,0.4)", lineHeight:1, marginBottom:6 }}>
+              {screen === "dead" ? "FLATLINED" : "SIGNAL\nBIRD"}
+            </div>
+            <div style={{ fontSize:11, color:"#34F5FF", letterSpacing:2, marginBottom:28, opacity:0.7 }}>
+              {screen === "dead" ? "signal lost" : "navigate the data walls"}
+            </div>
 
-  <!-- NAVBAR -->
-  <nav>
-    <a href="#hero" class="nav-logo">OFC <span>GAMERZ</span></a>
-    <ul class="nav-l
+            <div style={{ display:"flex", gap:40, marginBottom:30 }}>
+              {screen === "dead" && (
+                <div style={{ textAlign:"center" }}>
+                  <div style={{ fontSize:30, color:"#39FF88", textShadow:"0 0 12px #39FF88" }}>{lastScore}</div>
+                  <div style={{ fontSize:10, color:"#34F5FF", letterSpacing:2, opacity:0.6 }}>LAST</div>
+                </div>
+              )}
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:30, color:"#39FF88", textShadow:"0 0 12px #39FF88" }}>{best || "—"}</div>
+                <div style={{ fontSize:10, color:"#34F5FF", letterSpacing:2, opacity:0.6 }}>BEST</div>
+              </div>
+            </div>
+
+            <button onClick={startGame}
+              style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:13, letterSpacing:3,
+                textTransform:"uppercase", color:"#000", background:"#39FF88", border:"none",
+                padding:"12px 36px", cursor:"pointer", clipPath:"polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)",
+                boxShadow:"0 0 20px rgba(57,255,136,0.55)" }}>
+              {screen === "dead" ? "RETRY" : "TRANSMIT"}
+            </button>
+            <div style={{ marginTop:12, fontSize:10, color:"#EAFFF4", opacity:0.35, letterSpacing:1 }}>
+              SPACE / TAP / CLICK to flap
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
