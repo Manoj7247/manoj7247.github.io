@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OFC GAMERZ — Gaming HQ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  background:#020b0f;
+  color:#e0fff8;
+  font-family:'Rajdhani',Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+#loader{
+  position:fixed;inset:0;
+  background:#000;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+}
+
+#loader.hidden{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.6s;
+}
+
+.ld-logo{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:clamp(2rem,8vw,5rem);
+  color:#00ff9f;
+  text-shadow:0 0 20px #00ff9f,0 0 60px #00ff9f44;
+  letter-spacing:0.08em;
+  animation:ldpulse 1.2s infinite alternate;
+}
+
+.ld-logo span{color:#00e5ff}
+
+@keyframes ldpulse{
+  from{text-shadow:0 0 10px #00ff9f,0 0 30px #00ff9f33}
+  to{text-shadow:0 0 30px #00ff9f,0 0 80px #00ff9f88}
+}
+
+.ld-msg{
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(0.65rem,2vw,0.85rem);
+  color:#00e5ff;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  min-height:1.4em;
+}
+
+.ld-barwrap{width:min(480px,80vw)}
+
+.ld-track{
+  height:4px;
+  background:#0a1f28;
+  border-radius:4px;
+  overflow:hidden;
+}
+
+.ld-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ff9f,#00e5ff);
+  box-shadow:0 0 12px #00ff9f;
+  border-radius:4px;
+  transition:width 0.1s linear;
+}
+
+.ld-row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+}
+
+.ld-pct{color:#00ff9f}
+.ld-hint{color:#4a8a7a}
+
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
+  background-size:50px 50px;
+  pointer-events:none;
+  z-index:0;
+}
+
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  height:60px;
+  background:rgba(2,11,15,0.92);
+  border-bottom:1px solid #0a2a35;
+}
+
+.nav-logo{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:1.05rem;
+  color:#00ff9f;
+  text-shadow:0 0 10px #00ff9f;
+  text-decoration:none;
+  letter-spacing:0.1em;
+}
+
+.nav-logo span{color:#00e5ff}
+
+.nav-links{
+  display:flex;
+  gap:2rem;
+  list-style:none
+}
+
+.nav-links a{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  color:#4a8a7a;
+  text-decoration:none;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+
+.nav-links a:hover{color:#00e5ff}
+
+.dot{
+  width:8px;height:8px;
+  background:#00ff9f;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+  box-shadow:0 0 8px #00ff9f;
+  animation:blink 1.5s infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1}
+  50%{opacity:0.4}
+}
+
+.online{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+  color:#00ff9f;
+  display:flex;
+  align-items:center;
+}
+
+#hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 5% 40px;
+  z-index:1;
+}
+
+#hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(
+    ellipse 70% 50% at 50% 80%,
+    rgba(0,255,159,0.07),
+    transparent
+  );
+  z-index:0;
+}
+
+.hero-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.3em;
+  color:#00e5ff;
+  text-shadow:0 0 10px #00e5ff;
+  margin-bottom:20px;
+  position:relative;
+  z-index:1;
+  animation:fadeup 0.7s 0.2s both;
+}
+
+.hero-name{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:clamp(2.5rem,9vw,7rem);
+  color:#00ff9f;
+  text-shadow:0 0 20px #00ff9f,0 0 60px #00ff9f44;
+  line-height:1;
+  letter-spacing:0.05em;
+  position:relative;
+  z-index:1;
+  animation:fadeup 0.7s 0.4s both;
+}
+
+.hero-sub{
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(0.7rem,2vw,0.9rem);
+  color:#4a8a7a;
+  letter-spacing:0.2em;
+  margin-top:16px;
+  position:relative;
+  z-index:1;
+  animation:fadeup 0.7s 0.6s both;
+}
+
+.hero-sub span{color:#00e5ff}
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  margin-top:32px;
+  position:relative;
+  z-index:1;
+  animation:fadeup 0.7s 0.8s both;
+}
+
+.badge{
+  padding:6px 16px;
+  border:1px solid #00e5ff;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.12em;
+  color:#00e5ff;
+  background:rgba(0,229,255,0.06);
+  border-radius:2px;
+}
+
+.hero-btn{
+  display:inline-block;
+  margin-top:40px;
+  padding:14px 36px;
+  border:2px solid #00ff9f;
+  font-family:'Orbitron',Arial,sans-serif;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.2em;
+  color:#00ff9f;
+  text-decoration:none;
+  border-radius:2px;
+  transition:all 0.2s;
+  position:relative;
+  z-index:1;
+  animation:fadeup 0.7s 1s both;
+}
+
+.hero-btn:hover{
+  background:#00ff9f;
+  color:#020b0f;
+  box-shadow:0 0 20px #00ff9f
+}
+
+@keyframes fadeup{
+  from{
+    opacity:0;
+    transform:translateY(20px)
+  }
+  to{
+    opacity:1;
+    transform:none
+  }
+}
+
+.div{
+  height:1px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #00e5ff44,
+    transparent
+  );
+  margin:0
+}
+
+section{
+  position:relative;
+  z-index:1;
+  padding:80px 5%
+}
+
+.slabel{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:0.35em;
+  color:#00ff9f;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.slabel::before{content:'> '}
+
+.stitle{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:clamp(1.6rem,4vw,2.8rem);
+  color:#e0fff8;
+  line-height:1.1;
+  margin-bottom:40px;
+}
+
+.stitle em{
+  font-style:normal;
+  color:#00e5ff;
+  text-shadow:0 0 12px #00e5ff44
+}
+
+.origin-wrap{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:start
+}
+
+.origin-text p{
+  font-size:1.05rem;
+  line-height:1.9;
+  color:#7ab0a8;
+  margin-bottom:20px;
+}
+
+.origin-text strong{color:#00ff9f}
+
+.origin-text em{
+  font-style:normal;
+  color:#00e5ff
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px
+}
+
+.stat-card{
+  background:#061520;
+  border:1px solid #0a2a35;
+  border-top:2px solid #00ff9f;
+  padding:24px;
+  border-radius:2px;
+  transition:border-top-color 0.2s;
+}
+
+.stat-card:hover{border-top-color:#00e5ff}
+
+.stat-val{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:2rem;
+  color:#00ff9f;
+  text-shadow:0 0 14px #00ff9f;
+  line-height:1.1;
+}
+
+.stat-lbl{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  color:#4a8a7a;
+  letter-spacing:0.15em;
+  margin-top:6px;
+}
+
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px
+}
+
+.game-card{
+  background:#061520;
+  border:1px solid #0a2a35;
+  padding:28px;
+  border-radius:2px;
+  border-top:2px solid var(--a,#00ff9f);
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+
+.game-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 30px rgba(0,0,0,0.5)
+}
+
+.game-icon{
+  font-size:2.2rem;
+  margin-bottom:14px;
+  display:block
+}
+
+.game-name{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:700;
+  font-size:0.9rem;
+  color:#e0fff8;
+  letter-spacing:0.05em;
+  margin-bottom:4px;
+}
+
+.game-genre{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  color:var(--a,#00ff9f);
+  letter-spacing:0.15em;
+  margin-bottom:12px;
+}
+
+.game-desc{
+  font-size:0.9rem;
+  color:#4a8a7a;
+  line-height:1.6
+}
+
+.sbar{
+  margin-top:14px;
+  background:#0a2a35;
+  height:3px;
+  border-radius:2px
+}
+
+.sfill{
+  height:100%;
+  width:0%;
+  background:var(--a,#00ff9f);
+  box-shadow:0 0 8px var(--a,#00ff9f);
+  border-radius:2px;
+  transition:width 1.4s ease;
+}
+
+.spct{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  color:#4a8a7a;
+  margin-top:5px;
+  text-align:right;
+}
+
+.tl{
+  position:relative;
+  padding-left:36px;
+  max-width:680px
+}
+
+.tl::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:linear-gradient(#00ff9f,#00e5ff,#0077ff);
+  opacity:0.35
+}
+
+.tl-item{
+  position:relative;
+  margin-bottom:48px
+}
+
+.tl-dot{
+  position:absolute;
+  left:-42px;
+  top:4px;
+  width:12px;
+  height:12px;
+  background:#00ff9f;
+  border-radius:50%;
+  box-shadow:0 0 10px #00ff9f
+}
+
+.tl-yr{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-size:0.68rem;
+  font-weight:700;
+  color:#00e5ff;
+  letter-spacing:0.2em;
+  margin-bottom:6px
+}
+
+.tl-ev{
+  font-family:'Rajdhani',Arial,sans-serif;
+  font-weight:600;
+  font-size:1.1rem;
+  color:#e0fff8;
+  margin-bottom:5px
+}
+
+.tl-det{
+  font-size:0.92rem;
+  color:#4a8a7a;
+  line-height:1.6
+}
+
+.links-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:14px
+}
+
+.link-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px 20px;
+  background:#061520;
+  border:1px solid #0a2a35;
+  text-decoration:none;
+  border-radius:2px;
+  transition:all 0.2s
+}
+
+.link-card:hover{
+  border-color:var(--lc,#00e5ff);
+  transform:translateX(4px);
+  background:rgba(0,229,255,0.05)
+}
+
+.link-icon{
+  font-size:1.5rem;
+  flex-shrink:0
+}
+
+.link-name{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:700;
+  font-size:0.75rem;
+  color:#e0fff8;
+  letter-spacing:0.04em
+}
+
+.link-handle{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  color:var(--lc,#00e5ff);
+  letter-spacing:0.08em;
+  margin-top:3px
+}
+
+.link-arr{
+  margin-left:auto;
+  color:var(--lc,#00e5ff);
+  opacity:0;
+  transition:all 0.2s;
+  font-size:0.9rem
+}
+
+.link-card:hover .link-arr{opacity:1}
+
+.specs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:12px
+}
+
+.spec-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 18px;
+  background:#061520;
+  border:1px solid #0a2a35;
+  border-left:3px solid #00ff9f;
+  border-radius:2px;
+  transition:border-left-color 0.2s
+}
+
+.spec-row:hover{border-left-color:#00e5ff}
+
+.spec-k{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  color:#4a8a7a;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  min-width:80px
+}
+
+.spec-v{
+  font-family:'Rajdhani',Arial,sans-serif;
+  font-weight:600;
+  font-size:0.95rem;
+  color:#e0fff8
+}
+
+#contact{text-align:center}
+
+.contact-inner{
+  max-width:540px;
+  margin:0 auto
+}
+
+#contact p{
+  font-size:1.05rem;
+  color:#4a8a7a;
+  line-height:1.8;
+  margin-bottom:32px
+}
+
+.cbtns{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap
+}
+
+.cbtn1{
+  display:inline-block;
+  padding:13px 34px;
+  border:2px solid #00ff9f;
+  font-family:'Orbitron',Arial,sans-serif;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  color:#00ff9f;
+  text-decoration:none;
+  border-radius:2px;
+  transition:all 0.2s
+}
+
+.cbtn1:hover{
+  background:#00ff9f;
+  color:#020b0f
+}
+
+.cbtn2{
+  display:inline-block;
+  padding:13px 34px;
+  border:1px solid #00e5ff;
+  font-family:'Orbitron',Arial,sans-serif;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  color:#00e5ff;
+  text-decoration:none;
+  border-radius:2px;
+  transition:all 0.2s
+}
+
+.cbtn2:hover{
+  background:#00e5ff;
+  color:#020b0f
+}
+
+footer{
+  position:relative;
+  z-index:1;
+  border-top:1px solid #0a2a35;
+  padding:24px 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px
+}
+
+.flogo{
+  font-family:'Orbitron',Arial,sans-serif;
+  font-weight:900;
+  font-size:1rem;
+  color:#00ff9f;
+  text-shadow:0 0 10px #00ff9f
+}
+
+.fcopy{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  color:#4a8a7a;
+  letter-spacing:0.1em
+}
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.6s ease,transform 0.6s ease
+}
+
+.reveal.on{
+  opacity:1;
+  transform:none
+}
+
+@media(max-width:768px){
+  .origin-wrap{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">OFC <span>GAMERZ</span></div>
+  <div class="ld-msg" id="ldmsg">INITIALIZING SYSTEM</div>
+  <div class="ld-barwrap">
+    <div class="ld-track">
+      <div class="ld-fill" id="ldfill"></div>
+    </div>
+    <div class="ld-row">
+      <span class="ld-pct" id="ldpct">0%</span>
+      <span class="ld-hint">LOADING GAMING HQ</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">OFC <span>GAMERZ</span></a>
+
+  <ul class="nav-links">
+    <li><a href="#origin">Origin</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#timeline">Story</a></li>
+    <li><a href="#links">Links</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <div class="online">
+    <span class="dot"></span>ONLINE
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-tag">// WELCOME TO MY GAMING HQ //</p>
+
+  <h1 class="hero-name">OFC GAMERZ</h1>
+
+  <p class="hero-sub">
+    <span>FPS</span> ·
+    <span>BATTLE ROYALE</span> ·
+    <span>RPG</span> ·
+    <span>OPEN WORLD</span>
+  </p>
+
+  <div class="badges">
+    <span class="badge">🎮 MULTI-GENRE</span>
+    <span class="badge">🔫 FPS MAIN</span>
+    <span class="badge">🏆 COMPETITIVE</span>
+    <span class="badge">📡 LIVE ON TWITCH</span>
+  </div>
+
+  <a href="#origin" class="hero-btn">ENTER THE HQ</a>
+</section>
+
+<div class="div"></div>
+
+<!-- ORIGIN -->
+<section id="origin">
+  <p class="slabel">origin story</p>
+
+  <h2 class="stitle">
+    WHO IS <em>OFC GAMERZ</em>?
+  </h2>
+
+  <div class="origin-wrap reveal">
+
+    <div class="origin-text">
+      <p>
+        I was <strong>born on 20th January 2009</strong>,
+        into a world that had no idea it was giving birth
+        to a future gaming legend. From the very first cry,
+        it was clear — this one was built different.
+      </p>
+
+      <p>
+        Growing up, while most kids were outside,
+        I was inside mastering my reflexes, building strategies,
+        and grinding to the top. My first controller felt like
+        an extension of my hand — not a toy, but a <em>weapon</em>.
+      </p>
+
+      <p>
+        Today I dominate across multiple genres — from
+        <strong>precision FPS gameplay</strong> in Valorant and CS2,
+        to surviving until the last circle in Fortnite & PUBG,
+        to building empires and causing chaos in GTA and Minecraft.
+      </p>
+
+      <p>
+        This website is my <em>digital headquarters</em> —
+        where I share my journey, my stats, my streams.
+        Welcome to the HQ.
+      </p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-val">1K+</div>
+        <div class="stat-lbl">// HOURS PLAYED</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-val">6+</div>
+        <div class="stat-lbl">// GAMES MASTERED</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-val">TOP<br>5%</div>
+        <div class="stat-lbl">// RANKED TIER</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-val">∞</div>
+        <div class="stat-lbl">// GRIND NEVER STOPS</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- GAMES -->
+<section id="games">
+  <p class="slabel">arsenal</p>
+
+  <h2 class="stitle">
+    GAMES I <em>PLAY</em>
+  </h2>
+
+  <div class="games-grid">
+
+    <div class="game-card reveal" style="--a:#ff4655">
+      <span class="game-icon">🎯</span>
+      <div class="game-name">VALORANT</div>
+      <div class="game-genre">// FPS · TACTICAL SHOOTER</div>
+      <p class="game-desc">
+        Precision aim, agent abilities, and clutch plays.
+        I live for the 1v5 defuse round.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="90"></div>
+      </div>
+      <div class="spct">SKILL: 90%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#f5a623">
+      <span class="game-icon">💣</span>
+      <div class="game-name">CS2</div>
+      <div class="game-genre">// FPS · COUNTER-STRIKE</div>
+      <p class="game-desc">
+        Classic. Timeless. The purest test of aim and game sense.
+        Dust2 or bust.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="85"></div>
+      </div>
+      <div class="spct">SKILL: 85%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#00e5ff">
+      <span class="game-icon">🔫</span>
+      <div class="game-name">COD: WARZONE</div>
+      <div class="game-genre">// FPS · BATTLE ROYALE</div>
+      <p class="game-desc">
+        Drop in, loot hard, and eliminate squads with extreme prejudice.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="80"></div>
+      </div>
+      <div class="spct">SKILL: 80%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#00ff9f">
+      <span class="game-icon">🏗️</span>
+      <div class="game-name">FORTNITE</div>
+      <div class="game-genre">// BATTLE ROYALE · BUILD</div>
+      <p class="game-desc">
+        90s edits, box fights, and Victory Royales.
+        The builds are art. The wins are legendary.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="88"></div>
+      </div>
+      <div class="spct">SKILL: 88%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#c47c3a">
+      <span class="game-icon">🪖</span>
+      <div class="game-name">PUBG</div>
+      <div class="game-genre">// BATTLE ROYALE · SURVIVAL</div>
+      <p class="game-desc">
+        Erangel. Miramar. The original BR.
+        Every chicken dinner is earned, never given.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="75"></div>
+      </div>
+      <div class="spct">SKILL: 75%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#ff6b2b">
+      <span class="game-icon">🚗</span>
+      <div class="game-name">GTA V / ONLINE</div>
+      <div class="game-genre">// OPEN WORLD · ACTION</div>
+      <p class="game-desc">
+        Heists, chaos, custom lobbies.
+        Los Santos is basically my second home.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="92"></div>
+      </div>
+      <div class="spct">SKILL: 92%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#5aa837">
+      <span class="game-icon">⛏️</span>
+      <div class="game-name">MINECRAFT</div>
+      <div class="game-genre">// SANDBOX · SURVIVAL / PVP</div>
+      <p class="game-desc">
+        From dirt houses to mega builds.
+        Bedwars, Skywars, and survival worlds you wouldn't believe.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="95"></div>
+      </div>
+      <div class="spct">SKILL: 95%</div>
+    </div>
+
+    <div class="game-card reveal" style="--a:#a855f7">
+      <span class="game-icon">🃏</span>
+      <div class="game-name">+ MORE</div>
+      <div class="game-genre">// ALWAYS EXPLORING</div>
+      <p class="game-desc">
+        Always trying new titles. If it's got a ranking system
+        or a story to conquer, I'm in.
+      </p>
+      <div class="sbar">
+        <div class="sfill" data-w="100"></div>
+      </div>
+      <div class="spct">CURIOSITY: 100%</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <p class="slabel">lore log</p>
+
+  <h2 class="stitle">
+    THE <em>ORIGIN</em> TIMELINE
+  </h2>
+
+  <div class="tl">
+
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-yr">YEAR 0 — 2009</div>
+      <div class="tl-ev">SYSTEM BOOT: PLAYER ONE ARRIVED</div>
+      <p class="tl-det">
+        Born on 20th January 2009. The world spawned a new entity —
+        small in size, massive in potential. Little did anyone know
+        what was loading in the background.
+      </p>
+    </div>
+
+    <div class="tl-item reveal">
+      <div
+        class="tl-dot"
+              <div class="tl-dot" style="background:#00e5ff;box-shadow:0 0 10px #00e5ff"></div>
+      <div class="tl-yr">EARLY YEARS — TUTORIAL ZONE</div>
+      <div class="tl-ev">FIRST CONTROLLER EQUIPPED</div>
+      <p class="tl-det">The first game was just the beginning. Clumsy inputs turned into smooth mechanics. The tutorial zone was beaten fast — time to enter the real world.</p>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="background:#0077ff;box-shadow:0 0 10px #0077ff"></div>
+      <div class="tl-yr">LEVEL UP — COMPETITIVE ERA</div>
+      <div class="tl-ev">RANKED GRIND INITIATED</div>
+      <p class="tl-det">Discovered competitive gaming. Hours turned into days. Ranked queues, VOD reviews, aim trainers. The grind was no longer a hobby — it was a lifestyle.</p>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-yr">EXPANSION PACK — MULTI-GAME ERA</div>
+      <div class="tl-ev">GENRE MASTERY UNLOCKED</div>
+      <p class="tl-det">Expanded beyond FPS into Battle Royale, open-world chaos, and sandbox creativity. No genre was off limits. The inventory was growing fast.</p>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="background:#00e5ff;box-shadow:0 0 10px #00e5ff"></div>
+      <div class="tl-yr">PRESENT — GAMING HQ ONLINE</div>
+      <div class="tl-ev">THIS WEBSITE LAUNCHED</div>
+      <p class="tl-det">The HQ is live. Streams, clips, achievements and thoughts — all centralised here. This is just the beginning of the next chapter. The story continues...</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- LINKS -->
+<section id="links">
+  <p class="slabel">find me</p>
+  <h2 class="stitle">MY <em>LINKS</em></h2>
+  <div class="links-grid">
+    <a href="#" class="link-card reveal" style="--lc:#ff0000"><span class="link-icon">▶️</span><div><div class="link-name">YOUTUBE</div><div class="link-handle">@OFC GAMERZ</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#9147ff"><span class="link-icon">🟣</span><div><div class="link-name">TWITCH</div><div class="link-handle">twitch.tv/ofcgamerz</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#5865f2"><span class="link-icon">💬</span><div><div class="link-name">DISCORD</div><div class="link-handle">discord.gg/ofcgamerz</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#e1306c"><span class="link-icon">📸</span><div><div class="link-name">INSTAGRAM</div><div class="link-handle">@ofcgamerz</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#1da1f2"><span class="link-icon">🐦</span><div><div class="link-name">X / TWITTER</div><div class="link-handle">@ofcgamerz</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#00e5ff"><span class="link-icon">🎮</span><div><div class="link-name">STEAM</div><div class="link-handle">steamcommunity.com/ofcgamerz</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#00ff9f"><span class="link-icon">🎯</span><div><div class="link-name">TRACKER.GG</div><div class="link-handle">View My Stats</div></div><span class="link-arr">→</span></a>
+    <a href="#" class="link-card reveal" style="--lc:#f5a623"><span class="link-icon">📧</span><div><div class="link-name">BUSINESS EMAIL</div><div class="link-handle">contact@ofcgamerz.gg</div></div><span class="link-arr">→</span></a>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- SETUP -->
+<section id="setup">
+  <p class="slabel">loadout</p>
+  <h2 class="stitle">MY <em>SETUP</em></h2>
+  <div class="specs-grid">
+    <div class="spec-row reveal"><span class="spec-k">CPU</span><span class="spec-v">Intel Core i9 / AMD Ryzen 9</span></div>
+    <div class="spec-row reveal"><span class="spec-k">GPU</span><span class="spec-v">RTX 4080 / RX 7900 XTX</span></div>
+    <div class="spec-row reveal"><span class="spec-k">RAM</span><span class="spec-v">32GB DDR5 @6000MHz</span></div>
+    <div class="spec-row reveal"><span class="spec-k">MONITOR</span><span class="spec-v">27" 240Hz 1ms IPS</span></div>
+    <div class="spec-row reveal"><span class="spec-k">MOUSE</span><span class="spec-v">Logitech G Pro X Superlight 2</span></div>
+    <div class="spec-row reveal"><span class="spec-k">KEYBOARD</span><span class="spec-v">Wooting 60HE (Rapid Trigger)</span></div>
+    <div class="spec-row reveal"><span class="spec-k">HEADSET</span><span class="spec-v">SteelSeries Arctis Nova Pro</span></div>
+    <div class="spec-row reveal"><span class="spec-k">MOUSEPAD</span><span class="spec-v">XXL Extended Desk Mat</span></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="slabel">uplink</p>
+  <h2 class="stitle">LET'S <em>CONNECT</em></h2>
+  <div class="contact-inner reveal">
+    <p>Whether you want to squad up, collab on content, run a tournament, or just talk about games — my DMs are always open. Send the signal.</p>
+    <div class="cbtns">
+      <a href="#" class="cbtn1">DISCORD SERVER</a>
+      <a href="#" class="cbtn2">SEND AN EMAIL</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">OFC GAMERZ</div>
+  <div class="fcopy">© 2025 OFC GAMERZ GAMING HQ · ALL RIGHTS RESERVED</div>
+  <div class="online"><span class="dot"></span>ONLINE</div>
+</footer>
+
+<script>
+
+// LOADER — bulletproof version
+(function(){
+  var fill   = document.getElementById('ldfill');
+  var pct    = document.getElementById('ldpct');
+  var msg    = document.getElementById('ldmsg');
+  var loader = document.getElementById('loader');
+  var msgs   = [[0,'INITIALIZING SYSTEM'],[15,'LOADING ASSETS'],[30,'CALIBRATING AIM'],[50,'ENTERING GAMING MODE'],[65,'LOADING GAME LIBRARY'],[80,'CONNECTING TO SERVERS'],[90,'ALMOST READY'],[100,'WELCOME, OFC GAMERZ!']];
+  var p = 0;
+
+  function hide(){
+    if(!loader) return;
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 0.7s';
+    loader.style.pointerEvents = 'none';
+    setTimeout(function(){ loader.style.display='none'; }, 750);
+  }
+
+  // Safety: always hide after 7s no matter what
+  var safety = setTimeout(hide, 7000);
+
+  var t = setInterval(function(){
+    p++;
+    if(p > 100){ p = 100; }
+    if(fill) fill.style.width = p + '%';
+    if(pct)  pct.textContent  = p + '%';
+
+    if(msg){
+      for(var i = msgs.length-1; i >= 0; i--){
+        if(p >= msgs[i][0]){
+          msg.textContent = msgs[i][1];
+          break;
+        }
+      }
+    }
+
+    if(p >= 100){
+      clearInterval(t);
+      clearTimeout(safety);
+      setTimeout(hide, 400);
+    }
+  }, 28);
+})();
+
+// SCROLL REVEAL
+var revs = document.querySelectorAll('.reveal');
+var ro = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.classList.add('on');
+      ro.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.1});
+
+revs.forEach(function(r){ ro.observe(r); });
+
+// SKILL BARS
+var cards = document.querySelectorAll('.game-card');
+var bo = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var f = e.target.querySelector('.sfill');
+      if(f) f.style.width = (f.dataset.w || '0') + '%';
+      bo.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.2});
+
+cards.forEach(function(c){ bo.observe(c); });
+
+// NAV HIGHLIGHT
+var secs  = document.querySelectorAll('section[id]');
+var navAs = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', function(){
+  var cur = '';
+  secs.forEach(function(s){
+    if(window.scrollY >= s.offsetTop - 100) cur = s.id;
+  });
+
+  navAs.forEach(function(a){
+    a.style.color = (a.getAttribute('href') === '#'+cur) ? '#00ff9f' : '';
+  });
+});
+
+</script>
+</body>
+</html>
