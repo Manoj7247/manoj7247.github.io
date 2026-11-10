@@ -1,984 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OFC GAMERZ — Gaming HQ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Bhai Dooj, Puja Didi</title>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
-
-*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff1d6;--bg2:#ffd6b0;--ink:#4a0f1c;--soft:#7a3a46;--card:#fffaf0;--kum:#c8102e;--gold:#e8930c;--pink:#e0457b;--line:#f0c27a;--glow:rgba(232,147,12,.4);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d0712;--bg2:#3a0f24;--ink:#ffeccc;--soft:#e8bfa8;--card:#3d1428;--kum:#ff5a70;--gold:#ffb52e;--pink:#ff7ab0;--line:#6b2c3c;--glow:rgba(255,181,46,.3);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d0712;--bg2:#3a0f24;--ink:#ffeccc;--soft:#e8bfa8;--card:#3d1428;--kum:#ff5a70;--gold:#ffb52e;--pink:#ff7ab0;--line:#6b2c3c;--glow:rgba(255,181,46,.3);color-scheme:dark}
+*{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
-
-body{
-  background:#020b0f;
-  color:#e0fff8;
-  font-family:'Rajdhani',Arial,sans-serif;
-  overflow-x:hidden;
-}
-
-#loader{
-  position:fixed;inset:0;
-  background:#000;
-  z-index:9999;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:28px;
-}
-
-#loader.hidden{
-  opacity:0;
-  pointer-events:none;
-  transition:opacity 0.6s;
-}
-
-.ld-logo{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:clamp(2rem,8vw,5rem);
-  color:#00ff9f;
-  text-shadow:0 0 20px #00ff9f,0 0 60px #00ff9f44;
-  letter-spacing:0.08em;
-  animation:ldpulse 1.2s infinite alternate;
-}
-
-.ld-logo span{color:#00e5ff}
-
-@keyframes ldpulse{
-  from{text-shadow:0 0 10px #00ff9f,0 0 30px #00ff9f33}
-  to{text-shadow:0 0 30px #00ff9f,0 0 80px #00ff9f88}
-}
-
-.ld-msg{
-  font-family:'Share Tech Mono',monospace;
-  font-size:clamp(0.65rem,2vw,0.85rem);
-  color:#00e5ff;
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  min-height:1.4em;
-}
-
-.ld-barwrap{width:min(480px,80vw)}
-
-.ld-track{
-  height:4px;
-  background:#0a1f28;
-  border-radius:4px;
-  overflow:hidden;
-}
-
-.ld-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#00ff9f,#00e5ff);
-  box-shadow:0 0 12px #00ff9f;
-  border-radius:4px;
-  transition:width 0.1s linear;
-}
-
-.ld-row{
-  display:flex;
-  justify-content:space-between;
-  margin-top:8px;
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.7rem;
-}
-
-.ld-pct{color:#00ff9f}
-.ld-hint{color:#4a8a7a}
-
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
-  background-size:50px 50px;
-  pointer-events:none;
-  z-index:0;
-}
-
-nav{
-  position:fixed;top:0;left:0;right:0;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 5%;
-  height:60px;
-  background:rgba(2,11,15,0.92);
-  border-bottom:1px solid #0a2a35;
-}
-
-.nav-logo{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:1.05rem;
-  color:#00ff9f;
-  text-shadow:0 0 10px #00ff9f;
-  text-decoration:none;
-  letter-spacing:0.1em;
-}
-
-.nav-logo span{color:#00e5ff}
-
-.nav-links{
-  display:flex;
-  gap:2rem;
-  list-style:none
-}
-
-.nav-links a{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.72rem;
-  color:#4a8a7a;
-  text-decoration:none;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  transition:color 0.2s;
-}
-
-.nav-links a:hover{color:#00e5ff}
-
-.dot{
-  width:8px;height:8px;
-  background:#00ff9f;
-  border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
-  box-shadow:0 0 8px #00ff9f;
-  animation:blink 1.5s infinite;
-}
-
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:0.4}
-}
-
-.online{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.7rem;
-  color:#00ff9f;
-  display:flex;
-  align-items:center;
-}
-
-#hero{
-  position:relative;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:80px 5% 40px;
-  z-index:1;
-}
-
-#hero::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:radial-gradient(
-    ellipse 70% 50% at 50% 80%,
-    rgba(0,255,159,0.07),
-    transparent
-  );
-  z-index:0;
-}
-
-.hero-tag{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.72rem;
-  letter-spacing:0.3em;
-  color:#00e5ff;
-  text-shadow:0 0 10px #00e5ff;
-  margin-bottom:20px;
-  position:relative;
-  z-index:1;
-  animation:fadeup 0.7s 0.2s both;
-}
-
-.hero-name{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:clamp(2.5rem,9vw,7rem);
-  color:#00ff9f;
-  text-shadow:0 0 20px #00ff9f,0 0 60px #00ff9f44;
-  line-height:1;
-  letter-spacing:0.05em;
-  position:relative;
-  z-index:1;
-  animation:fadeup 0.7s 0.4s both;
-}
-
-.hero-sub{
-  font-family:'Share Tech Mono',monospace;
-  font-size:clamp(0.7rem,2vw,0.9rem);
-  color:#4a8a7a;
-  letter-spacing:0.2em;
-  margin-top:16px;
-  position:relative;
-  z-index:1;
-  animation:fadeup 0.7s 0.6s both;
-}
-
-.hero-sub span{color:#00e5ff}
-
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  justify-content:center;
-  margin-top:32px;
-  position:relative;
-  z-index:1;
-  animation:fadeup 0.7s 0.8s both;
-}
-
-.badge{
-  padding:6px 16px;
-  border:1px solid #00e5ff;
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.68rem;
-  letter-spacing:0.12em;
-  color:#00e5ff;
-  background:rgba(0,229,255,0.06);
-  border-radius:2px;
-}
-
-.hero-btn{
-  display:inline-block;
-  margin-top:40px;
-  padding:14px 36px;
-  border:2px solid #00ff9f;
-  font-family:'Orbitron',Arial,sans-serif;
-  font-size:0.75rem;
-  font-weight:700;
-  letter-spacing:0.2em;
-  color:#00ff9f;
-  text-decoration:none;
-  border-radius:2px;
-  transition:all 0.2s;
-  position:relative;
-  z-index:1;
-  animation:fadeup 0.7s 1s both;
-}
-
-.hero-btn:hover{
-  background:#00ff9f;
-  color:#020b0f;
-  box-shadow:0 0 20px #00ff9f
-}
-
-@keyframes fadeup{
-  from{
-    opacity:0;
-    transform:translateY(20px)
-  }
-  to{
-    opacity:1;
-    transform:none
-  }
-}
-
-.div{
-  height:1px;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    #00e5ff44,
-    transparent
-  );
-  margin:0
-}
-
-section{
-  position:relative;
-  z-index:1;
-  padding:80px 5%
-}
-
-.slabel{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.65rem;
-  letter-spacing:0.35em;
-  color:#00ff9f;
-  text-transform:uppercase;
-  margin-bottom:10px;
-}
-
-.slabel::before{content:'> '}
-
-.stitle{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:clamp(1.6rem,4vw,2.8rem);
-  color:#e0fff8;
-  line-height:1.1;
-  margin-bottom:40px;
-}
-
-.stitle em{
-  font-style:normal;
-  color:#00e5ff;
-  text-shadow:0 0 12px #00e5ff44
-}
-
-.origin-wrap{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:60px;
-  align-items:start
-}
-
-.origin-text p{
-  font-size:1.05rem;
-  line-height:1.9;
-  color:#7ab0a8;
-  margin-bottom:20px;
-}
-
-.origin-text strong{color:#00ff9f}
-
-.origin-text em{
-  font-style:normal;
-  color:#00e5ff
-}
-
-.stat-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px
-}
-
-.stat-card{
-  background:#061520;
-  border:1px solid #0a2a35;
-  border-top:2px solid #00ff9f;
-  padding:24px;
-  border-radius:2px;
-  transition:border-top-color 0.2s;
-}
-
-.stat-card:hover{border-top-color:#00e5ff}
-
-.stat-val{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:2rem;
-  color:#00ff9f;
-  text-shadow:0 0 14px #00ff9f;
-  line-height:1.1;
-}
-
-.stat-lbl{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.62rem;
-  color:#4a8a7a;
-  letter-spacing:0.15em;
-  margin-top:6px;
-}
-
-.games-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:20px
-}
-
-.game-card{
-  background:#061520;
-  border:1px solid #0a2a35;
-  padding:28px;
-  border-radius:2px;
-  border-top:2px solid var(--a,#00ff9f);
-  transition:transform 0.2s,box-shadow 0.2s;
-}
-
-.game-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 8px 30px rgba(0,0,0,0.5)
-}
-
-.game-icon{
-  font-size:2.2rem;
-  margin-bottom:14px;
-  display:block
-}
-
-.game-name{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:700;
-  font-size:0.9rem;
-  color:#e0fff8;
-  letter-spacing:0.05em;
-  margin-bottom:4px;
-}
-
-.game-genre{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.62rem;
-  color:var(--a,#00ff9f);
-  letter-spacing:0.15em;
-  margin-bottom:12px;
-}
-
-.game-desc{
-  font-size:0.9rem;
-  color:#4a8a7a;
-  line-height:1.6
-}
-
-.sbar{
-  margin-top:14px;
-  background:#0a2a35;
-  height:3px;
-  border-radius:2px
-}
-
-.sfill{
-  height:100%;
-  width:0%;
-  background:var(--a,#00ff9f);
-  box-shadow:0 0 8px var(--a,#00ff9f);
-  border-radius:2px;
-  transition:width 1.4s ease;
-}
-
-.spct{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.6rem;
-  color:#4a8a7a;
-  margin-top:5px;
-  text-align:right;
-}
-
-.tl{
-  position:relative;
-  padding-left:36px;
-  max-width:680px
-}
-
-.tl::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:1px;
-  background:linear-gradient(#00ff9f,#00e5ff,#0077ff);
-  opacity:0.35
-}
-
-.tl-item{
-  position:relative;
-  margin-bottom:48px
-}
-
-.tl-dot{
-  position:absolute;
-  left:-42px;
-  top:4px;
-  width:12px;
-  height:12px;
-  background:#00ff9f;
-  border-radius:50%;
-  box-shadow:0 0 10px #00ff9f
-}
-
-.tl-yr{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-size:0.68rem;
-  font-weight:700;
-  color:#00e5ff;
-  letter-spacing:0.2em;
-  margin-bottom:6px
-}
-
-.tl-ev{
-  font-family:'Rajdhani',Arial,sans-serif;
-  font-weight:600;
-  font-size:1.1rem;
-  color:#e0fff8;
-  margin-bottom:5px
-}
-
-.tl-det{
-  font-size:0.92rem;
-  color:#4a8a7a;
-  line-height:1.6
-}
-
-.links-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:14px
-}
-
-.link-card{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:18px 20px;
-  background:#061520;
-  border:1px solid #0a2a35;
-  text-decoration:none;
-  border-radius:2px;
-  transition:all 0.2s
-}
-
-.link-card:hover{
-  border-color:var(--lc,#00e5ff);
-  transform:translateX(4px);
-  background:rgba(0,229,255,0.05)
-}
-
-.link-icon{
-  font-size:1.5rem;
-  flex-shrink:0
-}
-
-.link-name{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:700;
-  font-size:0.75rem;
-  color:#e0fff8;
-  letter-spacing:0.04em
-}
-
-.link-handle{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.6rem;
-  color:var(--lc,#00e5ff);
-  letter-spacing:0.08em;
-  margin-top:3px
-}
-
-.link-arr{
-  margin-left:auto;
-  color:var(--lc,#00e5ff);
-  opacity:0;
-  transition:all 0.2s;
-  font-size:0.9rem
-}
-
-.link-card:hover .link-arr{opacity:1}
-
-.specs-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:12px
-}
-
-.spec-row{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:14px 18px;
-  background:#061520;
-  border:1px solid #0a2a35;
-  border-left:3px solid #00ff9f;
-  border-radius:2px;
-  transition:border-left-color 0.2s
-}
-
-.spec-row:hover{border-left-color:#00e5ff}
-
-.spec-k{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.62rem;
-  color:#4a8a7a;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  min-width:80px
-}
-
-.spec-v{
-  font-family:'Rajdhani',Arial,sans-serif;
-  font-weight:600;
-  font-size:0.95rem;
-  color:#e0fff8
-}
-
-#contact{text-align:center}
-
-.contact-inner{
-  max-width:540px;
-  margin:0 auto
-}
-
-#contact p{
-  font-size:1.05rem;
-  color:#4a8a7a;
-  line-height:1.8;
-  margin-bottom:32px
-}
-
-.cbtns{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap
-}
-
-.cbtn1{
-  display:inline-block;
-  padding:13px 34px;
-  border:2px solid #00ff9f;
-  font-family:'Orbitron',Arial,sans-serif;
-  font-size:0.72rem;
-  font-weight:700;
-  letter-spacing:0.18em;
-  color:#00ff9f;
-  text-decoration:none;
-  border-radius:2px;
-  transition:all 0.2s
-}
-
-.cbtn1:hover{
-  background:#00ff9f;
-  color:#020b0f
-}
-
-.cbtn2{
-  display:inline-block;
-  padding:13px 34px;
-  border:1px solid #00e5ff;
-  font-family:'Orbitron',Arial,sans-serif;
-  font-size:0.72rem;
-  font-weight:700;
-  letter-spacing:0.18em;
-  color:#00e5ff;
-  text-decoration:none;
-  border-radius:2px;
-  transition:all 0.2s
-}
-
-.cbtn2:hover{
-  background:#00e5ff;
-  color:#020b0f
-}
-
-footer{
-  position:relative;
-  z-index:1;
-  border-top:1px solid #0a2a35;
-  padding:24px 5%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  gap:12px
-}
-
-.flogo{
-  font-family:'Orbitron',Arial,sans-serif;
-  font-weight:900;
-  font-size:1rem;
-  color:#00ff9f;
-  text-shadow:0 0 10px #00ff9f
-}
-
-.fcopy{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.6rem;
-  color:#4a8a7a;
-  letter-spacing:0.1em
-}
-
-.reveal{
-  opacity:0;
-  transform:translateY(24px);
-  transition:opacity 0.6s ease,transform 0.6s ease
-}
-
-.reveal.on{
-  opacity:1;
-  transform:none
-}
-
-@media(max-width:768px){
-  .origin-wrap{grid-template-columns:1fr}
-  .nav-links{display:none}
-}
+body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--ink);font-family:'Hind',system-ui,sans-serif;font-size:18px;line-height:1.65;overflow-x:hidden}
+h1,h2,h3{font-family:'Yatra One',Georgia,serif;font-weight:400;line-height:1.25}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+main,header,footer{position:relative;z-index:1}
+section{max-width:900px;margin:0 auto;padding:60px 22px;text-align:center}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 22px;text-align:center;overflow:hidden}
+.mandala{position:absolute;width:min(130vw,820px);aspect-ratio:1;border-radius:50%;top:50%;left:50%;margin:calc(min(130vw,820px)/-2) 0 0 calc(min(130vw,820px)/-2);background:repeating-conic-gradient(from 0deg,var(--gold) 0 6deg,transparent 6deg 15deg,var(--pink) 15deg 21deg,transparent 21deg 30deg);-webkit-mask:radial-gradient(circle,transparent 28%,#000 29% 30%,transparent 31% 46%,#000 47% 49%,transparent 50% 62%,#000 63% 64%,transparent 65%);mask:radial-gradient(circle,transparent 28%,#000 29% 30%,transparent 31% 46%,#000 47% 49%,transparent 50% 62%,#000 63% 64%,transparent 65%);opacity:.3;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero>*:not(.mandala){position:relative}
+.hi{font-family:'Yatra One',serif;font-size:clamp(20px,5vw,28px);color:var(--gold)}
+.hero h1{font-size:clamp(42px,11vw,88px);color:var(--kum);margin:6px 0 10px;text-shadow:0 4px 30px var(--glow)}
+.hero p{max-width:32ch;color:var(--soft);font-size:1.2em}
+.diyas{display:flex;gap:18px;align-items:flex-end;justify-content:center;margin:12px 0 4px}
+.diya{width:70px;height:68px;position:relative;cursor:pointer;border:0;background:none}
+.diya.big{width:100px;height:90px}
+.bowl{position:absolute;bottom:0;left:6%;width:88%;height:42%;background:linear-gradient(var(--gold),#a85a00);border-radius:0 0 100px 100px}
+.flame{position:absolute;left:50%;bottom:36%;width:34%;height:56%;margin-left:-17%;background:radial-gradient(ellipse at 50% 75%,#fff6c4 0,#ffc531 40%,#ff7a00 80%);border-radius:50% 50% 50% 50%/65% 65% 35% 35%;transform-origin:50% 100%;animation:fl 1.4s ease-in-out infinite;box-shadow:0 0 36px 14px var(--glow)}
+.diya:nth-child(2n) .flame{animation-delay:.5s}
+.diya.off .flame{opacity:0;animation:none}
+@keyframes fl{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.1,.92) rotate(3deg)}}
+.hint{font-size:.9em;color:var(--soft)}
+.down{margin-top:26px;font-size:1.8em;animation:bob 1.8s ease-in-out infinite;text-decoration:none}
+@keyframes bob{50%{transform:translateY(8px)}}
+h2{font-size:clamp(28px,6vw,44px);color:var(--kum);margin-bottom:8px}
+.lead{color:var(--soft);max-width:46ch;margin:0 auto 28px}
+.thali{position:relative;width:min(330px,84vw);aspect-ratio:1;margin:10px auto;border-radius:50%;background:radial-gradient(circle,var(--card) 0 48%,var(--gold) 49% 52%,var(--card) 53% 60%,var(--pink) 61% 63%,var(--card) 64%);border:6px solid var(--gold);box-shadow:0 18px 50px var(--glow);display:grid;place-items:center}
+.face{width:46%;aspect-ratio:1;border-radius:50%;background:linear-gradient(#ffd9a8,#f1b27a);position:relative;display:grid;place-items:center;font-size:2.4em}
+.tilak{position:absolute;top:20%;left:50%;width:14%;height:30%;margin-left:-7%;background:var(--kum);border-radius:50% 50% 50% 50%/40% 40% 60% 60%;transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.thali.done .tilak{transform:scale(1)}
+.btn{font:inherit;font-weight:600;background:linear-gradient(135deg,var(--kum),var(--pink));color:#fff;border:0;border-radius:999px;padding:13px 30px;margin-top:22px;cursor:pointer;box-shadow:0 8px 22px var(--glow);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.msg{min-height:3.4em;margin-top:18px;font-size:1.12em}
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.flip{perspective:900px;height:180px;cursor:pointer;background:none;border:0;font:inherit;color:inherit;padding:0}
+.in{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.f,.b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:16px;display:flex;align-items:center;justify-content:center;text-align:center}
+.f{background:var(--card);border:2px solid var(--line);flex-direction:column;font-family:'Yatra One',serif;font-size:1.25em;color:var(--kum);box-shadow:0 10px 24px var(--glow)}
+.f span{font-size:2em}
+.b{background:linear-gradient(135deg,var(--kum),var(--pink));color:#fff;transform:rotateY(180deg);font-size:1em;line-height:1.5}
+.meter{max-width:460px;margin:0 auto}
+.bar{height:26px;border-radius:99px;background:var(--card);border:2px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink),var(--kum));transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.pct{font-family:'Yatra One',serif;font-size:2.2em;color:var(--kum);margin-top:10px}
+.gift{font-size:5em;background:none;border:0;cursor:pointer;display:block;margin:0 auto;animation:bob 2s ease-in-out infinite}
+.wish{max-width:520px;margin:12px auto 0;background:var(--card);border:2px dashed var(--gold);border-radius:22px;padding:24px;font-size:1.15em;min-height:110px;display:grid;place-items:center}
+footer{text-align:center;padding:40px 22px 60px;color:var(--soft)}
+footer b{color:var(--kum);font-family:'Yatra One',serif;font-weight:400;font-size:1.4em}
+.pop{position:fixed;pointer-events:none;z-index:5;font-size:26px;animation:pop 1.6s ease-out forwards}
+@keyframes pop{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.hp{width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:50% 35%;border:5px solid var(--gold);box-shadow:0 10px 36px var(--glow);margin:8px 0}
+.gal{columns:2 230px;column-gap:20px;text-align:center}
+.pol{break-inside:avoid;display:block;width:100%;font:inherit;background:#fffdf7;padding:10px 10px 12px;margin:0 0 22px;border:0;border-radius:6px;box-shadow:0 12px 28px var(--glow);cursor:pointer;transform:rotate(var(--t));transition:transform .25s}
+.pol:hover{transform:rotate(0) scale(1.03)}
+.pol img{width:100%;display:block;border-radius:3px}
+.pol span{display:block;font-family:'Yatra One',serif;color:#4a0f1c;margin-top:9px}
+.lb{position:fixed;inset:0;background:rgba(15,0,8,.92);z-index:20;display:none;place-items:center;padding:20px;text-align:center;cursor:pointer}
+.lb.on{display:grid}
+.lb img{max-width:100%;max-height:80vh;border-radius:10px;box-shadow:0 0 60px var(--glow)}
+.lb p{color:#ffeccc;margin-top:12px;font-family:'Yatra One',serif;font-size:1.2em}
 </style>
 </head>
-
 <body>
-
-<!-- LOADER -->
-<div id="loader">
-  <div class="ld-logo">OFC <span>GAMERZ</span></div>
-  <div class="ld-msg" id="ldmsg">INITIALIZING SYSTEM</div>
-  <div class="ld-barwrap">
-    <div class="ld-track">
-      <div class="ld-fill" id="ldfill"></div>
-    </div>
-    <div class="ld-row">
-      <span class="ld-pct" id="ldpct">0%</span>
-      <span class="ld-hint">LOADING GAMING HQ</span>
-    </div>
-  </div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <a href="#hero" class="nav-logo">OFC <span>GAMERZ</span></a>
-
-  <ul class="nav-links">
-    <li><a href="#origin">Origin</a></li>
-    <li><a href="#games">Games</a></li>
-    <li><a href="#timeline">Story</a></li>
-    <li><a href="#links">Links</a></li>
-    <li><a href="#setup">Setup</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-
-  <div class="online">
-    <span class="dot"></span>ONLINE
-  </div>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <p class="hero-tag">// WELCOME TO MY GAMING HQ //</p>
-
-  <h1 class="hero-name">OFC GAMERZ</h1>
-
-  <p class="hero-sub">
-    <span>FPS</span> ·
-    <span>BATTLE ROYALE</span> ·
-    <span>RPG</span> ·
-    <span>OPEN WORLD</span>
-  </p>
-
-  <div class="badges">
-    <span class="badge">🎮 MULTI-GENRE</span>
-    <span class="badge">🔫 FPS MAIN</span>
-    <span class="badge">🏆 COMPETITIVE</span>
-    <span class="badge">📡 LIVE ON TWITCH</span>
-  </div>
-
-  <a href="#origin" class="hero-btn">ENTER THE HQ</a>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="hero">
+  <div class="mandala" aria-hidden="true"></div>
+  <div class="hi">भाई दूज की हार्दिक शुभकामनाएँ</div>
+  <div class="diyas"><button class="diya" aria-label="Diya"><div class="flame"></div><div class="bowl"></div></button><button class="diya big" aria-label="Diya"><div class="flame"></div><div class="bowl"></div></button><button class="diya" aria-label="Diya"><div class="flame"></div><div class="bowl"></div></button></div>
+  <img class="hp" id="hp" alt="Manoj and Puja Didi smiling together">
+  <h1>Happy Bhai Dooj,<br>Puja Didi!</h1>
+  <p>Made with love by your little brother Manoj, just for you.</p>
+  <div class="hint">Tap the diyas to light or blow them out</div>
+  <a class="down" href="#tilak" aria-label="Scroll down">🪷</a>
+</header>
+<main>
+<section id="tilak">
+  <h2>A tilak for Didi</h2>
+  <p class="lead">Every year you pray for me. This time, let me bless you.</p>
+  <div class="thali"><div class="face">🙂<div class="tilak"></div></div></div>
+  <button class="btn" id="tbtn">Apply the tilak</button>
+  <div class="msg" id="tmsg" aria-live="polite"></div>
 </section>
 
-<div class="div"></div>
+<section id="memories"><h2>Our memories 📸</h2><p class="lead">Little moments, big love. Tap a photo to see it bigger.</p><div class="gal" id="gal"></div></section>
 
-<!-- ORIGIN -->
-<section id="origin">
-  <p class="slabel">origin story</p>
-
-  <h2 class="stitle">
-    WHO IS <em>OFC GAMERZ</em>?
-  </h2>
-
-  <div class="origin-wrap reveal">
-
-    <div class="origin-text">
-      <p>
-        I was <strong>born on 20th January 2009</strong>,
-        into a world that had no idea it was giving birth
-        to a future gaming legend. From the very first cry,
-        it was clear — this one was built different.
-      </p>
-
-      <p>
-        Growing up, while most kids were outside,
-        I was inside mastering my reflexes, building strategies,
-        and grinding to the top. My first controller felt like
-        an extension of my hand — not a toy, but a <em>weapon</em>.
-      </p>
-
-      <p>
-        Today I dominate across multiple genres — from
-        <strong>precision FPS gameplay</strong> in Valorant and CS2,
-        to surviving until the last circle in Fortnite & PUBG,
-        to building empires and causing chaos in GTA and Minecraft.
-      </p>
-
-      <p>
-        This website is my <em>digital headquarters</em> —
-        where I share my journey, my stats, my streams.
-        Welcome to the HQ.
-      </p>
-    </div>
-
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-val">1K+</div>
-        <div class="stat-lbl">// HOURS PLAYED</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">6+</div>
-        <div class="stat-lbl">// GAMES MASTERED</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">TOP<br>5%</div>
-        <div class="stat-lbl">// RANKED TIER</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">∞</div>
-        <div class="stat-lbl">// GRIND NEVER STOPS</div>
-      </div>
-    </div>
-
+<section id="why">
+  <h2>Why you’re the best Didi 💖</h2>
+  <p class="lead">Tap each card to see what I love most about you.</p>
+  <div class="flips">
+    <button class="flip"><div class="in"><div class="f"><span>🛡️</span>My protector</div><div class="b">You always stood by me, even when I didn’t say a word.</div></div></button>
+    <button class="flip"><div class="in"><div class="f"><span>🤗</span>My comfort</div><div class="b">One hug from you and every worry disappears.</div></div></button>
+    <button class="flip"><div class="in"><div class="f"><span>😂</span>My partner in fun</div><div class="b">Our silly fights and laughs are my favourite memories.</div></div></button>
+    <button class="flip"><div class="in"><div class="f"><span>🌟</span>My inspiration</div><div class="b">You make me want to be a better person every day.</div></div></button>
   </div>
 </section>
 
-<div class="div"></div>
-
-<!-- GAMES -->
-<section id="games">
-  <p class="slabel">arsenal</p>
-
-  <h2 class="stitle">
-    GAMES I <em>PLAY</em>
-  </h2>
-
-  <div class="games-grid">
-
-    <div class="game-card reveal" style="--a:#ff4655">
-      <span class="game-icon">🎯</span>
-      <div class="game-name">VALORANT</div>
-      <div class="game-genre">// FPS · TACTICAL SHOOTER</div>
-      <p class="game-desc">
-        Precision aim, agent abilities, and clutch plays.
-        I live for the 1v5 defuse round.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="90"></div>
-      </div>
-      <div class="spct">SKILL: 90%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#f5a623">
-      <span class="game-icon">💣</span>
-      <div class="game-name">CS2</div>
-      <div class="game-genre">// FPS · COUNTER-STRIKE</div>
-      <p class="game-desc">
-        Classic. Timeless. The purest test of aim and game sense.
-        Dust2 or bust.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="85"></div>
-      </div>
-      <div class="spct">SKILL: 85%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#00e5ff">
-      <span class="game-icon">🔫</span>
-      <div class="game-name">COD: WARZONE</div>
-      <div class="game-genre">// FPS · BATTLE ROYALE</div>
-      <p class="game-desc">
-        Drop in, loot hard, and eliminate squads with extreme prejudice.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="80"></div>
-      </div>
-      <div class="spct">SKILL: 80%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#00ff9f">
-      <span class="game-icon">🏗️</span>
-      <div class="game-name">FORTNITE</div>
-      <div class="game-genre">// BATTLE ROYALE · BUILD</div>
-      <p class="game-desc">
-        90s edits, box fights, and Victory Royales.
-        The builds are art. The wins are legendary.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="88"></div>
-      </div>
-      <div class="spct">SKILL: 88%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#c47c3a">
-      <span class="game-icon">🪖</span>
-      <div class="game-name">PUBG</div>
-      <div class="game-genre">// BATTLE ROYALE · SURVIVAL</div>
-      <p class="game-desc">
-        Erangel. Miramar. The original BR.
-        Every chicken dinner is earned, never given.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="75"></div>
-      </div>
-      <div class="spct">SKILL: 75%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#ff6b2b">
-      <span class="game-icon">🚗</span>
-      <div class="game-name">GTA V / ONLINE</div>
-      <div class="game-genre">// OPEN WORLD · ACTION</div>
-      <p class="game-desc">
-        Heists, chaos, custom lobbies.
-        Los Santos is basically my second home.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="92"></div>
-      </div>
-      <div class="spct">SKILL: 92%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#5aa837">
-      <span class="game-icon">⛏️</span>
-      <div class="game-name">MINECRAFT</div>
-      <div class="game-genre">// SANDBOX · SURVIVAL / PVP</div>
-      <p class="game-desc">
-        From dirt houses to mega builds.
-        Bedwars, Skywars, and survival worlds you wouldn't believe.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="95"></div>
-      </div>
-      <div class="spct">SKILL: 95%</div>
-    </div>
-
-    <div class="game-card reveal" style="--a:#a855f7">
-      <span class="game-icon">🃏</span>
-      <div class="game-name">+ MORE</div>
-      <div class="game-genre">// ALWAYS EXPLORING</div>
-      <p class="game-desc">
-        Always trying new titles. If it's got a ranking system
-        or a story to conquer, I'm in.
-      </p>
-      <div class="sbar">
-        <div class="sfill" data-w="100"></div>
-      </div>
-      <div class="spct">CURIOSITY: 100%</div>
-    </div>
-
-  </div>
+<section id="love">
+  <h2>Our love meter</h2>
+  <p class="lead">Let’s measure how much I love my Didi.</p>
+  <div class="meter"><div class="bar"><i id="fill"></i></div><div class="pct" id="pct">0%</div></div>
+  <button class="btn" id="mbtn">Measure it</button>
 </section>
 
-<div class="div"></div>
-
-<!-- TIMELINE -->
-<section id="timeline">
-  <p class="slabel">lore log</p>
-
-  <h2 class="stitle">
-    THE <em>ORIGIN</em> TIMELINE
-  </h2>
-
-  <div class="tl">
-
-    <div class="tl-item reveal">
-      <div class="tl-dot"></div>
-      <div class="tl-yr">YEAR 0 — 2009</div>
-      <div class="tl-ev">SYSTEM BOOT: PLAYER ONE ARRIVED</div>
-      <p class="tl-det">
-        Born on 20th January 2009. The world spawned a new entity —
-        small in size, massive in potential. Little did anyone know
-        what was loading in the background.
-      </p>
-    </div>
-
-    <div class="tl-item reveal">
-      <div
-        class="tl-dot"
+<section id="gift">
+  <h2>A surprise for you 🎁</h2>
+  <p class="lead">Tap the box to open a wish.</p>
+  <button class="gift" id="gbtn" aria-label="Open the gift">🎁</button>
+  <div class="wish" id="wish">Your wishes are waiting inside.</div>
+</section>
+</main>
+<div class="lb" id="lb" role="dialog" aria-label="Photo"><div><img id="lbi" alt="Manoj and Puja Didi"><p id="lbc"></p></div></div>
+<footer>
+  <b>Happy Bhai Dooj, Didi 🪔</b>
+  <p>You’re my first friend, my guide and my biggest cheerleader.<br>Love you always. – Manoj</p>
+  <button class="btn" id="theme">Switch light / dark</button>
+</footer>
+<script>
+var $=function(s){return document.querySelector(s)},$$=function(s){return document.querySelectorAll(s)};
+var cv=$('#fx'),cx=cv.getContext('2d'),W,H,P=[],E=['🌼','🪷','✨','🏵️'];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
+for(var i=0;i<24;i++)P.push({x:Math.random()*W,y:Math.random()*H,s:12+Math.random()*14,v:.4+Math.random()*.8,d:Math.random()*6,e:E[i%4]});
+(function t(){cx.clearRect(0,0,W,H);P.forEach(function(p){p.y+=p.v;p.d+=.02;p.x+=Math.sin(p.d)*.6;if(p.y>H+20){p.y=-20;p.x=Math.random()*W}cx.font=p.s+'px serif';cx.globalAlpha=.7;cx.fillText(p.e,p.x,p.y)});requestAnimationFrame(t)})();
+function ctr(el){var r=el.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]}
+function burst(x,y,set){set=set||['🌼','✨','🪔','❤️','🎉'];for(var i=0;i<18;i++){var s=document.createElement('span'),a=Math.random()*6.28,r=80+Math.random()*130;s.className='pop';s.textContent=set[i%set.length];s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--x',Math.cos(a)*r+'px');s.style.setProperty('--y',Math.sin(a)*r-40+'px');s.style.setProperty('--r',Math.random()*360+'deg');document.body.appendChild(s);setTimeout(function(e){e.remove()},1700,s)}}
+$$('.diya').forEach(function(d){d.onclick=function(){d.classList.toggle('off');if(!d.classList.contains('off')){var c=ctr(d);burst(c[0],c[1],['✨','🌼'])}}});
+var T=['Didi, may you get every happiness in the world. 💛','May your life shine brighter than a thousand diyas. 🪔','Thank you for loving me even when I’m annoying. 😄','Long life, health and success to the best sister ever! 🌟'];
+$('#tbtn').onclick=function(){var th=$('.thali');th.classList.add('done');var c=ctr(th);burst(c[0],c[1]);$('#tmsg').textContent=T[Math.floor(Math.random()*T.length)];this.textContent='Another blessing'};
+$$('.flip').forEach(function(f){f.onclick=function(){f.classList.toggle('on')}});
+$('#mbtn').onclick=function(){var f=$('#fill'),p=$('#pct'),n=0,b=this;f.style.width='100%';b.disabled=true;var iv=setInterval(function(){n+=3;if(n>=100){clearInterval(iv);p.textContent='∞ Infinity! ♾️';var c=ctr(p);burst(c[0],c[1],['❤️','💖','✨']);b.disabled=false;b.textContent='Measure again';setTimeout(function(){f.style.width='0'},1800)}else p.textContent=n+'%'},40)};
+var W2=['You’re not just my sister, you’re my first friend. 💖','May this Bhai Dooj bring you laughter, peace and all your dreams. 🌈','No matter how far we go, I’ll always be your little brother. 🤗','Thank you for every scolding, every hug and every sweet. 🍬','Aap ke bina ghar, ghar nahi lagta Didi. 🏡'],wi=0;
+$('#gbtn').onclick=function(){var c=ctr(this);burst(c[0],c[1]);$('#wish').textContent=W2[wi++%W2.length]};
+$('#theme').onclick=function(){var r=document.documentElement,d=matchMedia('(prefers-color-scheme:dark)').matches,cur=r.dataset.theme||(d?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark'};
+var IMG=["data:image/jpeg;base64,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
